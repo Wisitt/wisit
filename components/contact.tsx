@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
 
 import emailjs from 'emailjs-com';
@@ -27,7 +25,7 @@ import {
 import { useToast } from "@/hooks/use-toast"
 
 interface SocialLink {
-  icon: any
+  icon: React.ComponentType
   href: string
   label: string
   color: string
@@ -77,7 +75,7 @@ function FormField({
 }: {
   id: string
   label: string
-  icon: any
+  icon: React.ComponentType
   type?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -100,7 +98,7 @@ function FormField({
         htmlFor={id} 
         className="text-[#00ff9d] font-mono flex items-center gap-2"
       >
-        <Icon className="w-4 h-4" />
+        <Icon />
         <span>{label}</span>
       </label>
       {type === "textarea" ? (
@@ -249,7 +247,7 @@ export default function Contact() {
       }
   
       setFormData({ name: "", email: "", message: "" });
-    } catch (error) {
+    } catch {
       toast({
         title: "[ ERROR ] Transmission failed",
         description: "Neural network connection interrupted. Retry sequence initiated.",
@@ -479,8 +477,6 @@ export default function Contact() {
                       transition={{ duration: 0.8 }}
                     >
                       <social.icon 
-                        className="w-8 h-8" 
-                        style={{ color: social.color }}
                       />
                       <motion.div
                         className="absolute inset-0 rounded-full blur-xl -z-10"
@@ -526,7 +522,6 @@ export default function Contact() {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <div className="text-[#00ff9d]/60 space-y-1">
-              <p>// Connection status: optimal</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs">
                 <span>Encryption: enabled</span>
                 <span>Protocol: quantum_secure_v2.5</span>
