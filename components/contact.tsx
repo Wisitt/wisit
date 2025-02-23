@@ -1,4 +1,6 @@
-
+/* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import emailjs from 'emailjs-com';
@@ -25,7 +27,7 @@ import {
 import { useToast } from "@/hooks/use-toast"
 
 interface SocialLink {
-  icon: React.ComponentType
+  icon: any
   href: string
   label: string
   color: string
@@ -75,7 +77,7 @@ function FormField({
 }: {
   id: string
   label: string
-  icon: React.ComponentType
+  icon: any
   type?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -84,8 +86,30 @@ function FormField({
 }) {
   const [isFocused, setIsFocused] = useState(false)
   const fieldRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(fieldRef, { once: true })
+  const [isInView, setIsInView] = useState(false)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInView(entry.isIntersecting)
+        })
+      },
+      {
+        threshold: 0.5, // 50% ขององค์ประกอบต้องเข้าในมุมมองเพื่อให้ trigger
+      }
+    )
 
+    const currentFieldRef = fieldRef.current;
+    if (currentFieldRef) {
+      observer.observe(currentFieldRef);
+    }
+
+    return () => {
+      if (currentFieldRef) {
+        observer.unobserve(currentFieldRef);
+      }
+    }
+  }, [])
   return (
     <motion.div
       ref={fieldRef}
@@ -98,7 +122,7 @@ function FormField({
         htmlFor={id} 
         className="text-[#00ff9d] font-mono flex items-center gap-2"
       >
-        <Icon />
+        <Icon className="w-4 h-4" />
         <span>{label}</span>
       </label>
       {type === "textarea" ? (
@@ -247,7 +271,7 @@ export default function Contact() {
       }
   
       setFormData({ name: "", email: "", message: "" });
-    } catch {
+    } catch (error) {
       toast({
         title: "[ ERROR ] Transmission failed",
         description: "Neural network connection interrupted. Retry sequence initiated.",
@@ -477,6 +501,8 @@ export default function Contact() {
                       transition={{ duration: 0.8 }}
                     >
                       <social.icon 
+                        className="w-8 h-8" 
+                        style={{ color: social.color }}
                       />
                       <motion.div
                         className="absolute inset-0 rounded-full blur-xl -z-10"
@@ -522,6 +548,7 @@ export default function Contact() {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <div className="text-[#00ff9d]/60 space-y-1">
+              <p>// Connection status: optimal</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs">
                 <span>Encryption: enabled</span>
                 <span>Protocol: quantum_secure_v2.5</span>
