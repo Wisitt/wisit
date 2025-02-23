@@ -9,9 +9,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata = {
-  title: "Luxury Portfolio",
-  description: "An ultra-modern and luxurious portfolio website",
-  generator: 'v0.dev'
+  title: "Wisit",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
