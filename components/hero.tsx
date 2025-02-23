@@ -31,8 +31,6 @@ const scrambleText = "!@#$%^&*()_+{}|:<>?~"
 export default function Hero() {
   const controls = useAnimation()
   const containerRef = useRef<HTMLDivElement>(null)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const { scrollYProgress } = useScroll()
   const [scrambledText, setScrambledText] = useState("Wisitt")
   
@@ -66,18 +64,17 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [controls])
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    const x = (event.clientX - rect.left) / rect.width
-    const y = (event.clientY - rect.top) / rect.height
-    setMousePosition({ x, y })
-  }
+  // const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+  //   const rect = event.currentTarget.getBoundingClientRect()
+  //   const x = (event.clientX - rect.left) / rect.width
+  //   const y = (event.clientY - rect.top) / rect.height
+  //   setMousePosition({ x, y })
+  // }
 
   return (
     <div 
       ref={containerRef}
       className="relative min-h-screen overflow-hidden bg-[#0a0a0a]"
-      onMouseMove={handleMouseMove}
     >
       {/* Grid background */}
       <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
@@ -88,7 +85,7 @@ export default function Hero() {
 
       {/* Animated background */}
       <motion.div 
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 -z-10 relative"
         style={{ y: backgroundY }}
       >
         <div className="absolute inset-0 bg-gradient-radial from-primary/20 via-background to-background" />

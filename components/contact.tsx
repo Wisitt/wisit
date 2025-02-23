@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import emailjs from 'emailjs-com';
 import { useState, useEffect, useRef } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { 
@@ -217,41 +218,55 @@ export default function Contact() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitProgress(0)
-
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitProgress(0);
+  
     const progressInterval = setInterval(() => {
-      setSubmitProgress(prev => Math.min(prev + 10, 100))
-    }, 200)
-
+      setSubmitProgress(prev => Math.min(prev + 10, 100));
+    }, 200);
+  
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      toast({
-        title: "[ SUCCESS ] Message transmitted",
-        description: "Quantum encryption secured. Awaiting response...",
-      })
-      
-      setFormData({ name: "", email: "", message: "" })
+      // Use EmailJS to send the email
+      const response = await emailjs.send(
+        'service_fj0x6s6', // Replace with your EmailJS service ID
+        'template_rpd1olo', // Replace with your EmailJS template ID
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+        'XfMuvnU5hwjG4UnrT' // Replace with your EmailJS user ID
+      );
+  
+      if (response.status === 200) {
+        toast({
+          title: "[ SUCCESS ] Message transmitted",
+          description: "Quantum encryption secured. Awaiting response...",
+        });
+      } else {
+        throw new Error('Failed to send email');
+      }
+  
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       toast({
         title: "[ ERROR ] Transmission failed",
         description: "Neural network connection interrupted. Retry sequence initiated.",
         variant: "destructive",
-      })
+      });
     } finally {
-      clearInterval(progressInterval)
-      setSubmitProgress(100)
+      clearInterval(progressInterval);
+      setSubmitProgress(100);
       setTimeout(() => {
-        setIsSubmitting(false)
-        setSubmitProgress(0)
-      }, 500)
+        setIsSubmitting(false);
+        setSubmitProgress(0);
+      }, 500);
     }
-  }
+  };
 
   return (
-    <section className="py-20 relative overflow-hidden bg-[#0a0a0a]">
+    <section className="py-10 md:py-20 relative overflow-hidden bg-[#0a0a0a]">
       {/* Animated Grid Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
@@ -274,9 +289,9 @@ export default function Contact() {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto px-4 py-2">
+        <div className="container mx-auto px-2 sm:px-4 py-2">
           <div className="flex justify-between items-center font-mono text-xs">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               <div className="flex items-center gap-2">
                 <Terminal className="w-3 h-3 text-[#00ff9d]" />
                 <span className="text-[#00ff9d]">system.status: ONLINE</span>
@@ -287,7 +302,7 @@ export default function Contact() {
               </div>
               <ConnectionStatus />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mt-2 sm:mt-0">
               <Clock className="w-3 h-3 text-[#00ff9d]" />
               <span className="text-[#00ff9d]">{currentTime} UTC</span>
             </div>
@@ -295,34 +310,34 @@ export default function Contact() {
         </div>
       </motion.div>
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 sm:px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
           {/* Terminal Header */}
-          <div className="text-center space-y-6 mb-12">
+          <div className="text-center space-y-4 md:space-y-6 mb-8 md:mb-12">
             <div className="inline-block">
-              <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-4">
+              <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-2 md:mb-4">
                 <span className="text-[#00ff9d]">$</span>{" "}
                 <span className="text-[#00ffff]">initialize</span>{" "}
                 <span className="text-[#00ff9d]">quantum_transmission</span>{" "}
                 <span className="text-[#00ffff]">--secure</span>
               </div>
               
-              <h2 className="text-5xl md:text-6xl font-bold font-mono">
+              <h2 className="text-4xl md:text-6xl font-bold font-mono">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
                   Connect.establish();
                 </span>
               </h2>
               
               <motion.div 
-                className="flex items-center justify-center gap-4 mt-4"
+                className="flex items-center justify-center gap-4 mt-2 md:mt-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.3 }}
               >
                 <div className="px-3 py-1 bg-[#00ff9d]/10 rounded-full border border-[#00ff9d]/20">
                   <div className="flex items-center gap-2 text-[#00ff9d] font-mono text-sm">
@@ -338,14 +353,14 @@ export default function Contact() {
           <motion.form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="relative space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-8 rounded-lg"
+            className="relative space-y-6 md:space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-4 md:p-8 rounded-lg"
             initial={{ opacity: 0, y: 50 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.5 }}
           >
             <SecurityIndicator />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <FormField
                 id="name"
                 label="Identify"
@@ -406,155 +421,155 @@ export default function Contact() {
               </div>
             </motion.button>
 
-{/* Form Status */}
-<div className="pt-4 border-t border-[#00ff9d]/10">
-  <div className="flex justify-between items-center font-mono text-xs">
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-2 text-[#00ff9d]/60">
-        <Shield className="w-3 h-3" />
-        <span>ENCRYPTION: ACTIVE</span>
-      </div>
-      <div className="flex items-center gap-2 text-[#00ffff]/60">
-        <CheckCircle2 className="w-3 h-3" />
-        <span>CHANNEL: SECURE</span>
-      </div>
-    </div>
-    <span className="text-[#00ff9d]/40">
-      {`[${currentTime}]`}
-    </span>
-  </div>
-</div>
-</motion.form>
+            {/* Form Status */}
+            <div className="pt-4 border-t border-[#00ff9d]/10">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center font-mono text-xs gap-2">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-[#00ff9d]/60">
+                    <Shield className="w-3 h-3" />
+                    <span>ENCRYPTION: ACTIVE</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#00ffff]/60">
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>CHANNEL: SECURE</span>
+                  </div>
+                </div>
+                <span className="text-[#00ff9d]/40">
+                  {`[${currentTime}]`}
+                </span>
+              </div>
+            </div>
+          </motion.form>
 
-{/* Social Links */}
-<div className="mt-12 space-y-8">
-<div className="text-center">
-  <motion.div
-    className="inline-block px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm"
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <span className="text-[#00ff9d]">$</span>{" "}
-    <span className="text-[#00ffff]">load</span>{" "}
-    <span className="text-[#00ff9d]">network_protocols</span>
-  </motion.div>
-</div>
+          {/* Social Links */}
+          <div className="mt-8 md:mt-12 space-y-6 md:space-y-8">
+            <div className="text-center">
+              <motion.div
+                className="inline-block px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="text-[#00ff9d]">$</span>{" "}
+                <span className="text-[#00ffff]">load</span>{" "}
+                <span className="text-[#00ff9d]">network_protocols</span>
+              </motion.div>
+            </div>
 
-<motion.div
-  className="grid grid-cols-2 md:grid-cols-4 gap-4"
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.2 }}
->
-  {socialLinks.map((social, index) => (
-    <motion.a
-      key={social.label}
-      href={social.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group relative p-4 bg-black/30 backdrop-blur-sm border border-[#00ff9d]/10 rounded-lg hover:border-[#00ff9d]/30 transition-colors duration-300"
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <div className="flex flex-col items-center gap-3 relative z-10">
-        <motion.div
-          className="relative"
-          whileHover={{ rotate: 360 }}
-          transition={{ duration: 0.8 }}
-        >
-          <social.icon 
-            className="w-8 h-8" 
-            style={{ color: social.color }}
-          />
+            <motion.div
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              {socialLinks.map((social, index) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative p-4 bg-black/30 backdrop-blur-sm border border-[#00ff9d]/10 rounded-lg hover:border-[#00ff9d]/30 transition-colors duration-300"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="flex flex-col items-center gap-3 relative z-10">
+                    <motion.div
+                      className="relative"
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      <social.icon 
+                        className="w-8 h-8" 
+                        style={{ color: social.color }}
+                      />
+                      <motion.div
+                        className="absolute inset-0 rounded-full blur-xl -z-10"
+                        animate={{
+                          backgroundColor: social.color,
+                          opacity: [0.2, 0.4, 0.2],
+                          scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: index * 0.2,
+                        }}
+                      />
+                    </motion.div>
+                    <div className="space-y-1 text-center">
+                      <h3 className="text-[#00ffff] font-mono text-sm">
+                        {social.label}
+                      </h3>
+                      <p className="text-[#00ff9d]/60 font-mono text-xs">
+                        {social.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Hover Effect */}
+                  <motion.div
+                    className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      background: `radial-gradient(circle at center, ${social.color}10 0%, transparent 70%)`
+                    }}
+                  />
+                </motion.a>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Terminal Footer */}
           <motion.div
-            className="absolute inset-0 rounded-full blur-xl -z-10"
+            className="mt-8 md:mt-12 text-center font-mono space-y-2"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div className="text-[#00ff9d]/60 space-y-1">
+              <p>// Connection status: optimal</p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs">
+                <span>Encryption: enabled</span>
+                <span>Protocol: quantum_secure_v2.5</span>
+              </div>
+            </div>
+            <div className="text-[#00ffff]/40 text-xs">
+              <span className="mr-2">@{process.env.NEXT_PUBLIC_USERNAME || 'Wisitt'}</span>
+              <span>{currentTime} UTC</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Data Stream Effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-[#00ff9d]/10 text-xs font-mono"
+            initial={{
+              top: -20,
+              left: `${Math.random() * 100}%`,
+              opacity: 0
+            }}
             animate={{
-              backgroundColor: social.color,
-              opacity: [0.2, 0.4, 0.2],
-              scale: [1, 1.2, 1],
+              top: "100%",
+              opacity: [0, 1, 0]
             }}
             transition={{
-              duration: 2,
+              duration: Math.random() * 10 + 10,
               repeat: Infinity,
-              delay: index * 0.2,
+              ease: "linear",
+              delay: i * 0.5
             }}
-          />
-        </motion.div>
-        <div className="space-y-1 text-center">
-          <h3 className="text-[#00ffff] font-mono text-sm">
-            {social.label}
-          </h3>
-          <p className="text-[#00ff9d]/60 font-mono text-xs">
-            {social.description}
-          </p>
-        </div>
+          >
+            {[...Array(Math.floor(Math.random() * 20) + 10)].map((_, j) => (
+              <div key={j}>
+                {String.fromCharCode(0x30A0 + Math.random() * 96)}
+              </div>
+            ))}
+          </motion.div>
+        ))}
       </div>
-
-      {/* Hover Effect */}
-      <motion.div
-        className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(circle at center, ${social.color}10 0%, transparent 70%)`
-        }}
-      />
-    </motion.a>
-  ))}
-</motion.div>
-</div>
-
-{/* Terminal Footer */}
-<motion.div
-className="mt-12 text-center font-mono space-y-2"
-initial={{ opacity: 0 }}
-whileInView={{ opacity: 1 }}
-transition={{ duration: 0.8, delay: 0.5 }}
->
-<div className="text-[#00ff9d]/60 space-y-1">
-  <p>// Connection status: optimal</p>
-  <div className="flex items-center justify-center gap-4 text-xs">
-    <span>Encryption: enabled</span>
-    <span>Protocol: quantum_secure_v2.5</span>
-  </div>
-</div>
-<div className="text-[#00ffff]/40 text-xs">
-  <span className="mr-2">@{process.env.NEXT_PUBLIC_USERNAME || 'Wisitt'}</span>
-  <span>{currentTime} UTC</span>
-</div>
-</motion.div>
-</motion.div>
-</div>
-
-{/* Data Stream Effect */}
-<div className="absolute inset-0 pointer-events-none">
-{[...Array(10)].map((_, i) => (
-<motion.div
-key={i}
-className="absolute text-[#00ff9d]/10 text-xs font-mono"
-initial={{
-  top: -20,
-  left: `${Math.random() * 100}%`,
-  opacity: 0
-}}
-animate={{
-  top: "100%",
-  opacity: [0, 1, 0]
-}}
-transition={{
-  duration: Math.random() * 10 + 10,
-  repeat: Infinity,
-  ease: "linear",
-  delay: i * 0.5
-}}
->
-{[...Array(Math.floor(Math.random() * 20) + 10)].map((_, j) => (
-  <div key={j}>
-    {String.fromCharCode(0x30A0 + Math.random() * 96)}
-  </div>
-))}
-</motion.div>
-))}
-</div>
-</section>
-)
+    </section>
+  )
 }

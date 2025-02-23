@@ -73,7 +73,7 @@ export default function Testimonials() {
       <div className="container mx-auto px-4">
         {/* Terminal-style header */}
         <div className="text-center space-y-6 mb-16">
-          <div className="inline-block">
+          <div className="inline-block relative">
             <motion.div
               className="flex items-center justify-center gap-2 text-[#00ff9d]/80 mb-4 font-mono"
               initial={{ y: 20, opacity: 0 }}
@@ -120,7 +120,7 @@ export default function Testimonials() {
           animate={controls}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial) => (
             <motion.div
               key={testimonial.name}
               variants={{

@@ -56,7 +56,7 @@ export default function CyberScrollbar({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10 px-4 py-2"
+          className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10 px-4 py-2 relative"
         >
           <div className="container mx-auto flex justify-between items-center font-mono text-sm">
             <div className="flex items-center gap-4">

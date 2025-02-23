@@ -24,10 +24,10 @@ export function TimeProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(timer);
   }, []);
   if (currentTime === null) {
-    return null; // Optionally, render a loading indicator here
+    return null;
   }
 
-  
+
   return (
     <TimeContext.Provider value={{ currentTime, username: "Wisitt" }}>
     {children}

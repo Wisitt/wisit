@@ -1,9 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
-import { Terminal, Code2, Cpu, Server, FileCode2 } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+import { Card } from "@/components/ui/card"
+import { Terminal,Cpu,ChevronRight } from "lucide-react"
+import { motion } from "framer-motion"
+
+// Types
+interface Milestone {
+  year: string
+  title: string
+  description: string
+  icon: any
+  tech: string[]
+  achievement: string
+  codeSnippet: string
+}
+
+const useIntersectionObserver = (options = {}) => {
+  const elementRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting)
+    }, { threshold: 0.1, ...options })
+
+    const element = elementRef.current
+    if (element) observer.observe(element)
+    return () => { if (element) observer.unobserve(element) }
+  }, [options])
+
+  return [elementRef, isVisible] as const
+}
 
 const milestones = [
   { 
@@ -15,188 +44,240 @@ const milestones = [
     achievement: "Successfully deployed 5 major AI-powered features",
     codeSnippet: "async function enhanceAI() {"
   },
-  { 
-    year: "2024",
-    title: "Senior Full Stack Developer",
-    description: "Architecting scalable solutions and mentoring development teams",
-    icon: Server,
-    tech: ["Next.js", "TypeScript", "AWS"],
-    achievement: "Led team of 8 developers across 3 major projects",
-    codeSnippet: "class ArchitecturePattern {"
-  },
-  { 
-    year: "2023",
-    title: "Frontend Architecture Lead",
-    description: "Established frontend best practices and performance optimization",
-    icon: Code2,
-    tech: ["React", "Redux", "GraphQL"],
-    achievement: "Improved app performance by 40%",
-    codeSnippet: "const optimizePerformance ="
-  },
-  { 
-    year: "2022",
-    title: "Full Stack Developer",
-    description: "Mastered modern web development stack and best practices",
-    icon: FileCode2,
-    tech: ["Node.js", "Express", "MongoDB"],
-    achievement: "Delivered 12 successful projects",
-    codeSnippet: "function developSolution() {"
-  }
+  // ... other milestones
 ]
 
-export default function About() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
+const MilestoneCard = ({ milestone, index }: { 
+  milestone: Milestone
+  index: number
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <Card className="
+        shadow-[0_0_50px_rgba(0,255,157,0.15)]
+        group relative overflow-hidden
+        bg-gradient-to-br from-black/80 to-black/40
+        backdrop-blur-xl border-0
+        hover:shadow-[0_0_50px_rgba(0,255,157,0.15)]
+        transition-all duration-500
+      ">
+        {/* Animated background gradient */}
+        <div className="
+          absolute inset-0 bg-gradient-to-r from-[#00ff9d]/10 via-transparent to-[#00ffff]/10
+          opacity-0 group-hover:opacity-100 transition-opacity duration-700
+        " />
+        
+        {/* Glass overlay */}
+        <div className="absolute inset-0 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1])
-  const y = useTransform(scrollYProgress, [0, 0.2], [100, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2], [0.8, 1])
+        <div className="relative p-6 md:p-8">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 360 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="p-3 rounded-2xl bg-gradient-to-br from-[#00ff9d]/20 to-[#00ffff]/20"
+              >
+                <milestone.icon className="w-8 h-8 text-[#00ff9d]" />
+              </motion.div>
+              <div>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: "auto" }}
+                  className="overflow-hidden"
+                >
+                  <span className="text-[#00ff9d] font-mono text-sm tracking-wider">
+                    {milestone.year}
+                  </span>
+                </motion.div>
+                <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] to-[#00ffff]">
+                  {milestone.title}
+                </h3>
+              </div>
+            </div>
+            
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="p-2 rounded-full bg-[#00ff9d]/10 hover:bg-[#00ff9d]/20 transition-colors"
+            >
+              <ChevronRight 
+                className={`w-5 h-5 text-[#00ff9d] transition-transform duration-300 ${
+                  isExpanded ? "rotate-90" : ""
+                }`}
+              />
+            </motion.button>
+          </div>
+
+          <motion.div
+            initial={false}
+            animate={{ height: isExpanded ? "auto" : 0 }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-6 pb-4">
+              <p className="text-gray-300 leading-relaxed">
+                {milestone.description}
+              </p>
+
+              {/* Tech Stack */}
+              <div className="flex flex-wrap gap-2">
+                {milestone.tech.map((tech, i) => (
+                  <motion.span
+                    key={tech}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="
+                      px-4 py-1.5 text-sm rounded-full
+                      bg-gradient-to-r from-[#00ff9d]/10 to-[#00ffff]/10
+                      hover:from-[#00ff9d]/20 hover:to-[#00ffff]/20
+                      text-[#00ff9d] font-mono
+                      border border-[#00ff9d]/20
+                      transform hover:scale-105 transition-all duration-300
+                    "
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+
+              {/* Code Snippet */}
+              <div className="
+                relative group/code
+                font-mono text-sm
+                p-4 rounded-xl
+                bg-black/50
+                border border-[#00ff9d]/10
+                overflow-hidden
+              ">
+                <div className="
+                  absolute inset-0 bg-gradient-to-r from-[#00ff9d]/5 to-transparent
+                  group-hover/code:opacity-100 opacity-0 transition-opacity duration-300
+                " />
+                <code className="text-[#00ffff]">{milestone.codeSnippet}</code>
+              </div>
+
+              {/* Achievement */}
+              <div className="
+                relative overflow-hidden
+                p-4 rounded-xl
+                bg-gradient-to-r from-[#00ff9d]/5 to-[#00ffff]/5
+                border border-[#00ff9d]/10
+              ">
+                <div className="
+                  absolute inset-0 bg-gradient-to-r from-[#00ff9d]/5 to-[#00ffff]/5
+                  animate-pulse
+                " />
+                <p className="relative text-[#00ff9d] italic">
+                  {milestone.achievement}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </Card>
+    </motion.div>
+  )
+}
+
+export default function About() {
+  const [headerRef, isHeaderVisible] = useIntersectionObserver()
 
   return (
-    <section 
-      ref={containerRef} 
-      className="py-20 relative overflow-hidden bg-[#0a0a0a]"
-    >
-      {/* Grid background */}
-      <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
-        {/* Reduce excessive divs by utilizing CSS Grid instead */}
+    <section className="relative min-h-screen bg-[#030303] py-20 overflow-hidden">
+              {/* Cyberpunk Grid Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
+            {[...Array(200)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="border-[0.5px] border-[#00ff9d]/20"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: i * 0.005 }}
+              />
+            ))}
+          </div>
+        </div>
+      
+      {/* Animated background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute w-full h-full">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="
+                  absolute inset-0
+                  bg-gradient-conic from-[#00ff9d]/30 via-transparent to-transparent
+                  animate-spin-slow
+                "
+                style={{
+                  transform: `rotate(${i * 120}deg)`,
+                  animationDelay: `${i * -2}s`,
+                  animationDuration: '8s',
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto px-4">
-        <motion.div 
-          style={{ opacity, y, scale }} 
-          className="space-y-16"
+      <div className="container mx-auto px-4 relative">
+        {/* Header */}
+        <motion.div
+          ref={headerRef}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : 20 }}
+          className="text-center mb-20"
         >
-          <div className="text-center space-y-6">
-            <div className="inline-block">
-              <motion.div
-                className="flex items-center justify-center gap-2 text-[#00ff9d]/80 mb-4 font-mono"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Terminal className="w-4 h-4" />
-                <span className="text-sm">~/career » loading_timeline</span>
-              </motion.div>
-              
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-5xl md:text-6xl font-bold font-mono"
-              >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
-                  Career.timeline();
-                </span>
-              </motion.h2>
-            </div>
-          </div>
-
-          <div className="relative">
-            {/* Timeline line */}
-            <motion.div 
-              className="absolute left-1/2 transform -translate-x-1/2 h-full"
-              style={{
-                width: '2px',
-                background: 'linear-gradient(to bottom, #00ff9d, transparent)'
-              }}
-              initial={{ height: 0 }}
-              whileInView={{ height: '100%' }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-            />
-
-            {/* Timeline items */}
-            <div className="space-y-24">
-              {milestones.map((milestone, index) => (
-                <motion.div
-                  key={milestone.year}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  className={`flex items-center justify-center gap-8 ${
-                    index % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
-                  }`}
-                >
-                  <Card className="w-full md:w-[calc(50%-2rem)] group hover:shadow-[0_0_30px_rgba(0,255,157,0.1)] transition-all duration-500 bg-black/50 backdrop-blur-sm border-[#00ff9d]/10">
-                    <CardContent className="p-8">
-                      <motion.div 
-                        className="space-y-6"
-                        whileHover={{ scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <div className="flex items-start gap-6">
-                          <div className="relative">
-                            <div className="p-3 rounded-xl bg-[#00ff9d]/10 group-hover:bg-[#00ff9d]/20 transition-colors duration-300">
-                              <milestone.icon className="w-8 h-8 text-[#00ff9d]" />
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-4">
-                            <div>
-                              <h3 className="text-3xl font-bold mb-2 font-mono text-[#00ff9d]">
-                                {milestone.year}
-                              </h3>
-                              <h4 className="text-xl font-semibold text-[#00ffff]">
-                                {milestone.title}
-                              </h4>
-                            </div>
-                            
-                            <p className="text-gray-400 leading-relaxed">
-                              {milestone.description}
-                            </p>
-                            
-                            <div className="space-y-3">
-                              <div className="flex flex-wrap gap-2">
-                                {milestone.tech.map((tech) => (
-                                  <span 
-                                    key={tech}
-                                    className="px-3 py-1 text-sm rounded-full bg-[#00ff9d]/10 text-[#00ff9d] font-mono"
-                                  >
-                                    {tech}
-                                  </span>
-                                ))}
-                              </div>
-                              <div className="font-mono text-sm text-[#00ffff]/80">
-                                <span className="text-[#00ff9d]"></span> {milestone.codeSnippet}
-                              </div>
-                              <p className="text-sm text-[#00ff9d]/80 italic">
-                                {milestone.achievement}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Timeline marker */}
-                  <div className="relative">
-                    <motion.div
-                      className="w-5 h-5 rounded-full bg-[#00ff9d] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                      whileHover={{ scale: 1.2 }}
-                      whileTap={{ scale: 0.9 }}
-                    />
-                    <motion.div
-                      className="w-10 h-10 rounded-full border-2 border-[#00ff9d]/30 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.5, 0.8, 0.5],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+          <div className="inline-block">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-center gap-2 text-[#00ff9d]/80 mb-4"
+            >
+              <Terminal className="w-5 h-5" />
+              <span className="font-mono text-sm">~/portfolio » career.view()</span>
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-5xl md:text-6xl font-bold"
+            >
+              <span className="
+                bg-clip-text text-transparent
+                bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]
+                animate-gradient
+              ">
+                Career Journey
+              </span>
+            </motion.h2>
           </div>
         </motion.div>
+
+        {/* Milestones Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+          {milestones.map((milestone, index) => (
+            <MilestoneCard
+              key={milestone.year}
+              milestone={milestone}
+              index={index}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )

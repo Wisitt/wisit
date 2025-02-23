@@ -1,13 +1,13 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
-import { 
-  Terminal, 
-  ExternalLink, 
-  Github, 
-  ArrowRight, 
+import {
+  Terminal,
+  ExternalLink,
+  Github,
+  ArrowRight,
   Code2,
   Clock,
   Shield,
@@ -17,7 +17,29 @@ import {
   Zap
 } from "lucide-react"
 
-const projects = [
+interface Project {
+  title: string
+  description: string
+  image: string
+  technologies: string[]
+  links: {
+    github: string
+    live: string
+  }
+  status: string
+  year: string
+  metrics: {
+    performance: number
+    users: string
+    uptime: string
+  }
+  details: {
+    features: string[]
+    impact: string
+  }
+}
+
+const projects: Project[] = [
   {
     title: "Neural Network Dashboard",
     description: "AI-powered analytics platform with real-time data processing",
@@ -25,7 +47,7 @@ const projects = [
     technologies: ["React", "TensorFlow.js", "WebGL", "Node.js"],
     links: {
       github: "https://github.com/Wisitt/neural-dashboard",
-      live: "https://neural-dashboard.demo",
+      live: "https://neural-dashboard.demo"
     },
     status: "ONLINE",
     year: "2025",
@@ -38,7 +60,7 @@ const projects = [
       features: [
         "Real-time neural network visualization",
         "Advanced data processing algorithms",
-        "Multi-layer network architecture",
+        "Multi-layer network architecture"
       ],
       impact: "Reduced processing time by 60%"
     }
@@ -50,7 +72,7 @@ const projects = [
     technologies: ["Next.js", "GraphQL", "AWS", "Prisma"],
     links: {
       github: "https://github.com/Wisitt/quantum-shop",
-      live: "https://quantum-shop.demo",
+      live: "https://quantum-shop.demo"
     },
     status: "STABLE",
     year: "2024",
@@ -63,7 +85,7 @@ const projects = [
       features: [
         "AI-powered product recommendations",
         "Real-time inventory management",
-        "Quantum-inspired search algorithm",
+        "Quantum-inspired search algorithm"
       ],
       impact: "Increased sales conversion by 45%"
     }
@@ -75,7 +97,7 @@ const projects = [
     technologies: ["Python", "PyTorch", "FastAPI", "React"],
     links: {
       github: "https://github.com/Wisitt/cyber-chat",
-      live: "https://cyber-chat.demo",
+      live: "https://cyber-chat.demo"
     },
     status: "LEARNING",
     year: "2024",
@@ -88,7 +110,7 @@ const projects = [
       features: [
         "Natural language processing",
         "Contextual understanding",
-        "Multi-language support",
+        "Multi-language support"
       ],
       impact: "Automated 70% of customer inquiries"
     }
@@ -100,7 +122,7 @@ const projects = [
     technologies: ["D3.js", "WebAssembly", "Rust", "React"],
     links: {
       github: "https://github.com/Wisitt/neural-hub",
-      live: "https://neural-hub.demo",
+      live: "https://neural-hub.demo"
     },
     status: "ACTIVE",
     year: "2023",
@@ -110,60 +132,81 @@ const projects = [
       uptime: "99.7%"
     },
     details: {
-      features: [
-        "3D data visualization",
-        "Predictive modeling",
-        "Real-time analytics",
-      ],
+      features: ["3D data visualization", "Predictive modeling", "Real-time analytics"],
       impact: "Improved decision accuracy by 35%"
     }
   }
 ]
 
-function ProjectCard({ project, index }: { project: typeof projects[0], index: number }) {
+import { LucideIcon } from "lucide-react"
+
+function MetricItem({
+  icon: Icon,
+  value,
+  label
+}: {
+  icon: LucideIcon
+  value: string
+  label: string
+}) {
+  return (
+    <div className="text-center group">
+      <div className="relative">
+        {/* Slightly reduce animation complexity for faster rendering */}
+        <Icon className="w-4 h-4 text-[#00ff9d] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+      </div>
+      <div className="text-[#00ffff] text-lg font-mono group-hover:text-[#00ffff] transition-colors">
+        {value}
+      </div>
+      <div className="text-xs text-[#00ff9d]/60 font-mono group-hover:text-[#00ff9d] transition-colors">
+        {label}
+      </div>
+    </div>
+  )
+}
+
+function ProjectCard({
+  project,
+  index
+}: {
+  project: Project
+  index: number
+}) {
   const [isHovered, setIsHovered] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
 
   return (
     <motion.div
-      className="flex-shrink-0 w-full md:w-2/3 lg:w-1/2 px-4"
-      initial={{ opacity: 0, y: 50 }}
+      className="w-full md:w-1/2 lg:w-1/3 p-3"
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: index * 0.2 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <motion.div 
-        className="bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-6 rounded-lg h-full relative overflow-hidden"
-        whileHover={{ 
+      <motion.div
+        className="bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-6 rounded-lg relative overflow-hidden h-full flex flex-col"
+        whileHover={{
           scale: 1.02,
-          boxShadow: "0 0 30px rgba(0,255,157,0.2)"
+          boxShadow: "0 0 20px rgba(0,255,157,0.2)"
         }}
-        transition={{ type: "spring", stiffness: 300 }}
+        transition={{ type: "spring", stiffness: 200 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Project Image with Hover Effects */}
-        <motion.div
-          className="relative w-full h-64 mb-6 rounded-lg overflow-hidden group"
-          whileHover={{ scale: 1.05 }}
-        >
+        <motion.div className="relative h-48 mb-4 rounded-lg overflow-hidden group">
           <Image
             src={project.image}
             alt={project.title}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"
             initial={{ opacity: 0 }}
             animate={{ opacity: isHovered ? 1 : 0 }}
           />
-          
-          {/* Project Links */}
           <motion.div
-            className="absolute inset-0 flex items-center justify-center gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
+            className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <motion.a
               href={project.links.github}
@@ -188,73 +231,67 @@ function ProjectCard({ project, index }: { project: typeof projects[0], index: n
           </motion.div>
         </motion.div>
 
-        {/* Project Info */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h3 className="text-2xl font-bold text-[#00ff9d] font-mono">
-                {project.title}
-              </h3>
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-[#00ffff]/60">{project.year}</span>
-                <span className="px-2 py-1 rounded-full bg-[#00ff9d]/10 text-[#00ff9d] border border-[#00ff9d]/20">
-                  {project.status}
-                </span>
+        <div className="flex-grow flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <h3 className="text-xl font-bold text-[#00ff9d] font-mono">
+                  {project.title}
+                </h3>
+                <div className="flex items-center gap-2 text-xs font-mono mt-1">
+                  <span className="text-[#00ffff]/60">{project.year}</span>
+                  <span className="px-2 py-1 rounded-full bg-[#00ff9d]/10 text-[#00ff9d] border border-[#00ff9d]/20">
+                    {project.status}
+                  </span>
+                </div>
               </div>
-            </div>
-            <motion.button
-              onClick={() => setShowDetails(!showDetails)}
-              className="p-2 rounded-lg bg-[#00ff9d]/10 text-[#00ff9d] hover:bg-[#00ff9d]/20 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Code2 className="w-5 h-5" />
-            </motion.button>
-          </div>
-
-          <p className="text-[#00ffff]/80 font-mono text-sm leading-relaxed">
-            {project.description}
-          </p>
-
-          {/* Technologies */}
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.map((tech) => (
-              <span 
-                key={tech}
-                className="text-xs font-mono px-3 py-1 rounded-full bg-[#00ff9d]/10 text-[#00ff9d] border border-[#00ff9d]/20 hover:bg-[#00ff9d]/20 transition-colors"
+              <motion.button
+                onClick={() => setShowDetails(!showDetails)}
+                className="p-2 rounded-lg bg-[#00ff9d]/10 text-[#00ff9d] hover:bg-[#00ff9d]/20 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {tech}
-              </span>
-            ))}
+                <Code2 className="w-5 h-5" />
+              </motion.button>
+            </div>
+            <p className="text-[#00ffff]/80 font-mono text-sm mb-3">
+              {project.description}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {project.technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="text-xs font-mono px-2 py-1 rounded-full bg-[#00ff9d]/10 text-[#00ff9d] border border-[#00ff9d]/20 hover:bg-[#00ff9d]/20 transition-colors"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+            <div className="grid grid-cols-3 gap-2 border-t border-[#00ff9d]/10 pt-2">
+              <MetricItem
+                icon={Activity}
+                value={`${project.metrics.performance}%`}
+                label="Performance"
+              />
+              <MetricItem
+                icon={Users}
+                value={project.metrics.users}
+                label="Active Users"
+              />
+              <MetricItem
+                icon={Server}
+                value={project.metrics.uptime}
+                label="Uptime"
+              />
+            </div>
           </div>
-
-          {/* Metrics with Icons */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#00ff9d]/10">
-            <MetricItem
-              icon={Activity}
-              value={`${project.metrics.performance}%`}
-              label="Performance"
-            />
-            <MetricItem
-              icon={Users}
-              value={project.metrics.users}
-              label="Active Users"
-            />
-            <MetricItem
-              icon={Server}
-              value={project.metrics.uptime}
-              label="Uptime"
-            />
-          </div>
-
-          {/* Expandable Details */}
           <AnimatePresence>
             {showDetails && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="pt-4 border-t border-[#00ff9d]/10"
+                className="pt-2 mt-3 border-t border-[#00ff9d]/10"
               >
                 <div className="space-y-3">
                   <h4 className="text-[#00ffff] font-mono text-sm">Key Features:</h4>
@@ -262,9 +299,9 @@ function ProjectCard({ project, index }: { project: typeof projects[0], index: n
                     {project.details.features.map((feature, i) => (
                       <motion.li
                         key={i}
-                        initial={{ x: -20, opacity: 0 }}
+                        initial={{ x: -15, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: i * 0.1 }}
+                        transition={{ delay: i * 0.05 }}
                         className="flex items-center gap-2 text-xs text-[#00ff9d]/80 font-mono"
                       >
                         <Zap className="w-3 h-3" />
@@ -280,84 +317,43 @@ function ProjectCard({ project, index }: { project: typeof projects[0], index: n
             )}
           </AnimatePresence>
         </div>
-
-        {/* Decorative Corner */}
-        <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-          <div className="absolute top-0 right-0 w-16 h-16 bg-[#00ff9d]/10 transform rotate-45 translate-x-8 -translate-y-8" />
-        </div>
       </motion.div>
     </motion.div>
   )
 }
 
-import { LucideIcon } from "lucide-react";
-
-function MetricItem({ icon: Icon, value, label }: { icon: LucideIcon, value: string, label: string }) {
-  return (
-    <div className="text-center group">
-      <div className="relative">
-        <Icon className="w-4 h-4 text-[#00ff9d] mx-auto mb-1 group-hover:scale-110 transition-transform" />
-        <motion.div
-          className="absolute inset-0 rounded-full blur-xl"
-          animate={{
-            backgroundColor: "#00ff9d",
-            opacity: [0.1, 0.2, 0.1],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-      </div>
-      <div className="text-[#00ffff] text-lg font-mono group-hover:text-[#00ffff] transition-colors">
-        {value}
-      </div>
-      <div className="text-xs text-[#00ff9d]/60 font-mono group-hover:text-[#00ff9d] transition-colors">
-        {label}
-      </div>
-    </div>
-  )
-}
-
 export default function Portfolio() {
-  const containerRef = useRef<HTMLDivElement>(null)
   const [currentTime, setCurrentTime] = useState("")
-  const { scrollXProgress } = useScroll({ 
-    container: containerRef,
-    offset: ["start end", "end start"],
-  })
-  const x = useTransform(scrollXProgress, [0, 1], ["0%", "-75%"])
+  const backgroundRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setCurrentTime("2025-02-21 18:36:09")
     const updateTime = () => {
       const now = new Date()
-      setCurrentTime(now.toISOString().slice(0, 19).replace('T', ' '))
+      setCurrentTime(now.toISOString().slice(0, 19).replace("T", " "))
     }
+    updateTime()
     const interval = setInterval(updateTime, 1000)
     return () => clearInterval(interval)
   }, [])
-  
-  if (!currentTime) return null
-
 
   return (
-    <section className="py-20 bg-[#0a0a0a] overflow-hidden relative">
-      {/* Cyberpunk Grid Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
-          {[...Array(200)].map((_, i) => (
+    <section className="py-16 bg-[#0a0a0a] overflow-hidden relative">
+      {/* Simplified background grid for faster rendering */}
+      <div ref={backgroundRef} className="absolute inset-0">
+        <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.08]">
+          {[...Array(50)].map((_, i) => (
             <motion.div
               key={i}
               className="border-[0.5px] border-[#00ff9d]/20"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.005 }}
+              transition={{ delay: i * 0.003 }}
             />
           ))}
         </div>
       </div>
 
-      {/* Status Bar */}
-      <motion.div 
+      <motion.div
         className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -383,14 +379,12 @@ export default function Portfolio() {
         </div>
       </motion.div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4">
-        {/* Header */}
+      <div className="container mx-auto px-4 mt-12">
         <motion.div
-          className="text-center space-y-6 mb-16"
+          className="text-center space-y-6 mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <div className="inline-block">
             <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-4">
@@ -399,8 +393,7 @@ export default function Portfolio() {
               <span className="text-[#00ff9d]">project_matrix</span>{" "}
               <span className="text-[#00ffff]">--showcase</span>
             </div>
-            
-            <h2 className="text-5xl md:text-6xl font-bold font-mono">
+            <h2 className="text-4xl md:text-5xl font-bold font-mono">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
                 Projects.showcase();
               </span>
@@ -408,87 +401,70 @@ export default function Portfolio() {
           </div>
         </motion.div>
 
-        {/* Projects Slider */}
-        <div 
-          ref={containerRef} 
-          className="flex overflow-x-scroll pb-10 cyberpunk-scrollbar"
-        >
-          <motion.div className="flex" style={{ x }}>
-            {projects.map((project, index) => (
-              <ProjectCard key={project.title} project={project} index={index} />
-            ))}
-          </motion.div>
+        {/* Responsive grid to replace horizontal scroll */}
+        <div className="flex flex-wrap">
+          {projects.map((project, index) => (
+            <ProjectCard key={project.title} project={project} index={index} />
+          ))}
         </div>
 
         <motion.div
           className="flex items-center justify-center gap-2 mt-8 text-[#00ff9d]/60 font-mono"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
+          transition={{ delay: 0.8 }}
         >
           <Code2 className="w-4 h-4" />
-          <span className="text-sm">Navigate matrix for more projects</span>
+          <span className="text-sm">Hover over projects for more details</span>
           <ArrowRight className="w-4 h-4" />
         </motion.div>
 
-        {/* Terminal Footer */}
         <motion.div
-          className="mt-12 text-center font-mono space-y-2"
+          className="mt-10 text-center font-mono space-y-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 1 }}
         >
-          <div className="text-[#00ff9d]/60 space-y-1">
-            <p>{/* Matrix scan completed successfully */}</p>
-            <div className="flex items-center justify-center gap-4 text-xs">
+          <div className="text-[#00ff9d]/60 space-y-1 text-xs">
+            <div className="flex items-center justify-center gap-4">
               <span>Projects loaded: {projects.length}</span>
               <span>System integrity: 100%</span>
             </div>
           </div>
           <div className="text-[#00ffff]/40 text-xs">
-            <span className="mr-2">@{process.env.NEXT_PUBLIC_USERNAME || 'Wisitt'}</span>
+            <span className="mr-2">@{process.env.NEXT_PUBLIC_USERNAME || "Wisitt"}</span>
             <span>{currentTime} UTC</span>
           </div>
         </motion.div>
       </div>
 
-      {/* Data Stream Effect */}
+      {/* Reduced data stream effect for performance */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(10)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute text-[#00ff9d]/10 text-xs font-mono"
-            initial={{
-              top: -20,
-              left: `${Math.random() * 100}%`,
-              opacity: 0
-            }}
-            animate={{
-              top: "100%",
-              opacity: [0, 1, 0]
-            }}
+            initial={{ top: -20, left: `${Math.random() * 100}%`, opacity: 0 }}
+            animate={{ top: "100%", opacity: [0, 1, 0] }}
             transition={{
-              duration: Math.random() * 10 + 10,
+              duration: Math.random() * 8 + 8,
               repeat: Infinity,
               ease: "linear",
               delay: i * 0.5
             }}
           >
-            {[...Array(Math.floor(Math.random() * 20) + 10)].map((_, j) => (
-              <div key={j}>
-                {String.fromCharCode(0x30A0 + Math.random() * 96)}
-              </div>
+            {[...Array(Math.floor(Math.random() * 15) + 5)].map((_, j) => (
+              <div key={j}>{String.fromCharCode(0x30a0 + Math.random() * 96)}</div>
             ))}
           </motion.div>
         ))}
       </div>
 
-      {/* Fixed Project Count Indicator */}
       <motion.div
         className="fixed bottom-4 right-4 px-4 py-2 bg-black/80 backdrop-blur-sm border border-[#00ff9d]/20 rounded-lg font-mono text-xs"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5 }}
+        transition={{ delay: 1.2 }}
       >
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 text-[#00ff9d]">
