@@ -308,9 +308,6 @@ export default function Contact() {
       {/* Status Bar */}
       <motion.div 
         className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         <div className="container mx-auto px-2 sm:px-4 py-2">
           <div className="flex justify-between items-center font-mono text-xs">
@@ -335,9 +332,6 @@ export default function Contact() {
 
       <div className="container mx-auto px-2 sm:px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
           {/* Terminal Header */}
@@ -358,9 +352,6 @@ export default function Contact() {
               
               <motion.div 
                 className="flex items-center justify-center gap-4 mt-2 md:mt-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
               >
                 <div className="px-3 py-1 bg-[#00ff9d]/10 rounded-full border border-[#00ff9d]/20">
                   <div className="flex items-center gap-2 text-[#00ff9d] font-mono text-sm">
@@ -377,7 +368,6 @@ export default function Contact() {
             ref={formRef}
             onSubmit={handleSubmit}
             className="relative space-y-6 md:space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-4 md:p-8 rounded-lg z-10"
-            transition={{ duration: 0.5 }}
           >
             <SecurityIndicator />
 
@@ -467,9 +457,6 @@ export default function Contact() {
             <div className="text-center">
               <motion.div
                 className="inline-block px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
               >
                 <span className="text-[#00ff9d]">$</span>{" "}
                 <span className="text-[#00ffff]">load</span>{" "}
@@ -479,9 +466,6 @@ export default function Contact() {
 
             <motion.div
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
             >
               {socialLinks.map((social, index) => (
                 <motion.a
@@ -542,9 +526,6 @@ export default function Contact() {
           {/* Terminal Footer */}
           <motion.div
             className="mt-8 md:mt-12 text-center font-mono space-y-2"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
           >
             <div className="text-[#00ff9d]/60 space-y-1">
               <p>// Connection status: optimal</p>
