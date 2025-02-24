@@ -114,9 +114,6 @@ function FormField({
     <motion.div
       ref={fieldRef}
       className="space-y-2 relative"
-      initial={animate ? { opacity: 0, y: 20 } : undefined}
-      animate={isInView ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 0.5 }}
     >
       <label 
         htmlFor={id} 
@@ -154,9 +151,6 @@ function FormField({
         {isFocused && (
           <motion.div
             className="absolute inset-0 z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
           >
             <div className="absolute inset-0 bg-[#00ff9d]/5 blur-xl" />
           </motion.div>
@@ -170,9 +164,6 @@ function SecurityIndicator() {
   return (
     <motion.div 
       className="absolute -top-3 left-4 px-3 py-1 bg-black/80 border border-[#00ff9d]/30 rounded-full font-mono text-xs flex items-center gap-2"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5 }}
     >
       <Lock className="w-3 h-3 text-[#00ff9d]" />
       <span className="text-[#00ff9d]">QUANTUM ENCRYPTED</span>
