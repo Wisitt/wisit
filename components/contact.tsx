@@ -377,7 +377,6 @@ export default function Contact() {
             ref={formRef}
             onSubmit={handleSubmit}
             className="relative space-y-6 md:space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-4 md:p-8 rounded-lg z-10"
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 0.5 }}
           >
             <SecurityIndicator />
