@@ -153,7 +153,7 @@ function FormField({
       <AnimatePresence>
         {isFocused && (
           <motion.div
-            className="absolute inset-0 -z-10"
+            className="absolute inset-0 z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -179,6 +179,7 @@ function SecurityIndicator() {
     </motion.div>
   )
 }
+
 
 function ConnectionStatus() {
   const [connectionStrength, setConnectionStrength] = useState(0)
@@ -218,7 +219,7 @@ export default function Contact() {
   const [currentTime, setCurrentTime] = useState("2025-02-21 18:32:02")
   const { toast } = useToast()
   const formRef = useRef<HTMLFormElement>(null)
-  const isInView = useInView(formRef)
+  const isInView = useInView(formRef, { once: false })
 
   useEffect(() => {
     const updateTime = () => {
@@ -322,7 +323,7 @@ export default function Contact() {
                 <User className="w-3 h-3 text-[#00ffff]" />
                 <span className="text-[#00ffff]">user: Wisitt</span>
               </div>
-              <ConnectionStatus />
+              <ConnectionStatus  />
             </div>
             <div className="flex items-center gap-2 mt-2 sm:mt-0">
               <Clock className="w-3 h-3 text-[#00ff9d]" />
@@ -375,7 +376,7 @@ export default function Contact() {
           <motion.form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="relative space-y-6 md:space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-4 md:p-8 rounded-lg"
+            className="relative space-y-6 md:space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-4 md:p-8 rounded-lg z-10"
             initial={{ opacity: 0, y: 50 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 0.5 }}
@@ -505,7 +506,7 @@ export default function Contact() {
                         style={{ color: social.color }}
                       />
                       <motion.div
-                        className="absolute inset-0 rounded-full blur-xl -z-10"
+                        className="absolute inset-0 rounded-full blur-xl z-10"
                         animate={{
                           backgroundColor: social.color,
                           opacity: [0.2, 0.4, 0.2],

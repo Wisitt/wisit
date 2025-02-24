@@ -85,7 +85,7 @@ export default function Hero() {
 
       {/* Animated background */}
       <motion.div 
-        className="absolute inset-0 -z-10 relative"
+        className="absolute inset-0 relative"
         style={{ y: backgroundY }}
       >
         <div className="absolute inset-0 bg-gradient-radial from-primary/20 via-background to-background" />
@@ -121,7 +121,7 @@ export default function Hero() {
 
       {/* Main content */}
       <motion.div 
-        className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4"
+        className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center"
         style={{ y: textY }}
         animate={controls}
       >
