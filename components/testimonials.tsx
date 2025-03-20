@@ -81,7 +81,7 @@ export default function Testimonials() {
               transition={{ delay: 0.5 }}
             >
               <Terminal className="w-4 h-4" />
-              <span className="text-sm">~/feedback » loading_testimonials</span>
+              <div className="text-sm">~/feedback » loading_testimonials</div>
             </motion.div>
             
             <motion.h2

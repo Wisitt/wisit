@@ -357,10 +357,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                   {project.title}
                 </h3>
                 <div className="flex items-center gap-2 text-xs font-mono mt-1">
-                  <span className="text-[#00ffff]/60">{project.year}</span>
-                  <span className="px-2 py-1 rounded-full bg-[#00ff9d]/10 text-[#00ff9d] border border-[#00ff9d]/20">
+                  <div className="text-[#00ffff]/60">{project.year}</div>
+                  <div className="px-2 py-1 rounded-full bg-[#00ff9d]/10 text-[#00ff9d] border border-[#00ff9d]/20">
                     {project.status}
-                  </span>
+                  </div>
                 </div>
               </div>
               <motion.button
@@ -568,7 +568,7 @@ export default function Portfolio() {
     transition={{ delay: 0.8 }}
   >
     <Code2 className="w-4 h-4" />
-    <span className="text-sm">Drag freely to explore projects</span>
+    <div className="text-sm">Drag freely to explore projects</div>
     <ArrowRight className="w-4 h-4" />
   </motion.div>
 </div>

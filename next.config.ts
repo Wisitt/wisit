@@ -4,6 +4,8 @@ import million from 'million/compiler';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: false,
+
   webpack: (config: any) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
