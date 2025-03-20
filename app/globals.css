@@ -223,12 +223,4 @@ html {
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Hide default cursor */
-body {
-  cursor: none;
-}
 
-/* Show default cursor on interactive elements */
-a, button, [role="button"], input[type="submit"], .interactive-element {
-  cursor: none;
-}

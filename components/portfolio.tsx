@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useRef, useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import Image from "next/image"
+import { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
+import Image from "next/image";
 import {
   Terminal,
   ExternalLink,
@@ -14,145 +14,267 @@ import {
   Activity,
   Users,
   Server,
-  Zap
-} from "lucide-react"
+  Zap,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 
 interface Project {
-  title: string
-  description: string
-  image: string
-  technologies: string[]
+  title: string;
+  description: string;
+  image: string;
+  technologies: string[];
   links: {
-    github: string
-    live: string
-  }
-  status: string
-  year: string
+    github?: string;
+    live?: string;
+  };
+  status: string;
+  year: string;
   metrics: {
-    performance: number
-    users: string
-    uptime: string
-  }
+    performance: number;
+    users?: string;
+    uptime?: string;
+    impact?: string;
+  };
   details: {
-    features: string[]
-    impact: string
-  }
+    features: string[];
+    impact: string;
+  };
 }
 
 const projects: Project[] = [
   {
-    title: "Neural Network Dashboard",
-    description: "AI-powered analytics platform with real-time data processing",
-    image: "/test.jpg",
-    technologies: ["React", "TensorFlow.js", "WebGL", "Node.js"],
+    title: "FinTrack",
+    description:
+      "Personal finance tracking system with OCR receipt scanning for expense categorization",
+    image: "/projects/fintrack.jpg",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Supabase", "Vercel"],
     links: {
-      github: "https://github.com/Wisitt/neural-dashboard",
-      live: "https://neural-dashboard.demo"
+      github: "https://github.com/Wisitt/fintrack",
+      live: "https://fintrack.vercel.app"
     },
-    status: "ONLINE",
+    status: "LATEST",
     year: "2025",
     metrics: {
-      performance: 98,
-      users: "10k+",
-      uptime: "99.9%"
+      performance: 95,
+      users: "N/A",
+      uptime: "N/A"
     },
     details: {
       features: [
-        "Real-time neural network visualization",
-        "Advanced data processing algorithms",
-        "Multi-layer network architecture"
+        "OCR receipt scanning for automated expense entry",
+        "Categorized spending visualization",
+        "Budget planning and tracking",
+        "Financial insights and reports"
       ],
-      impact: "Reduced processing time by 60%"
+      impact: "Simplified expense tracking by 70%"
     }
   },
   {
-    title: "Quantum E-commerce",
-    description: "Next-gen shopping experience with AI recommendations",
-    image: "/test.jpg",
-    technologies: ["Next.js", "GraphQL", "AWS", "Prisma"],
+    title: "Salmon Reservation",
+    description:
+      "Online salmon booking and pricing system for sales representatives",
+    image: "/projects/salmon.jpg",
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "Prisma",
+      "Render",
+      "Vercel"
+    ],
     links: {
-      github: "https://github.com/Wisitt/quantum-shop",
-      live: "https://quantum-shop.demo"
+      github: "https://github.com/Wisitt/salmon-reservation",
+      live: "https://salmon-reservation.vercel.app"
     },
     status: "STABLE",
     year: "2024",
     metrics: {
-      performance: 95,
-      users: "50k+",
-      uptime: "99.8%"
+      performance: 92,
+      users: "N/A",
+      uptime: "N/A"
     },
     details: {
       features: [
-        "AI-powered product recommendations",
-        "Real-time inventory management",
-        "Quantum-inspired search algorithm"
+        "Dynamic pricing system based on inventory",
+        "Reservation management for sales representatives",
+        "Real-time availability updates",
+        "Sales analytics dashboard"
       ],
-      impact: "Increased sales conversion by 45%"
+      impact: "Increased booking efficiency by 45%"
     }
   },
   {
-    title: "CyberChat AI",
-    description: "Advanced chatbot with natural language understanding",
-    image: "/test.jpg",
-    technologies: ["Python", "PyTorch", "FastAPI", "React"],
+    title: "UniRoom",
+    description:
+      "Classroom reservation system for instructors and staff to prevent double bookings",
+    image: "/projects/uniroom.jpg",
+    technologies: ["React", "TypeScript", "Vite", "Tailwind", "Docker", "Nginx"],
     links: {
-      github: "https://github.com/Wisitt/cyber-chat",
-      live: "https://cyber-chat.demo"
+      github: "https://github.com/Wisitt/uniroom",
+      live: "https://uniroom-app.com"
     },
-    status: "LEARNING",
+    status: "DEPLOYED",
     year: "2024",
     metrics: {
-      performance: 92,
-      users: "25k+",
+      performance: 90,
+      users: "N/A",
       uptime: "99.5%"
     },
     details: {
       features: [
-        "Natural language processing",
-        "Contextual understanding",
-        "Multi-language support"
+        "Interactive calendar for room scheduling",
+        "Conflict detection and prevention",
+        "Resource management for classrooms",
+        "Notification system for booking updates"
       ],
-      impact: "Automated 70% of customer inquiries"
+      impact: "Reduced scheduling conflicts by 90%"
     }
   },
   {
-    title: "Neural Analytics Hub",
-    description: "Real-time data visualization and predictive analytics",
-    image: "/test.jpg",
-    technologies: ["D3.js", "WebAssembly", "Rust", "React"],
+    title: "Facebook Clone",
+    description:
+      "Facebook clone developed using Angular to study social media platform functionalities",
+    image: "/projects/fbclone.jpg",
+    technologies: ["Angular", "TypeScript", "SCSS", "Firebase"],
     links: {
-      github: "https://github.com/Wisitt/neural-hub",
-      live: "https://neural-hub.demo"
+      github: "https://github.com/Wisitt/facebook-clone"
     },
-    status: "ACTIVE",
+    status: "STUDY",
     year: "2023",
     metrics: {
-      performance: 94,
-      users: "15k+",
-      uptime: "99.7%"
+      performance: 88,
+      impact: "Enhanced Angular skills"
     },
     details: {
-      features: ["3D data visualization", "Predictive modeling", "Real-time analytics"],
-      impact: "Improved decision accuracy by 35%"
+      features: [
+        "News feed with dynamic content loading",
+        "User profiles and authentication",
+        "Post creation and interaction",
+        "Social features like friend requests"
+      ],
+      impact: "Developed strong understanding of complex UI systems"
+    }
+  },
+  {
+    title: "Perfume Prediction",
+    description:
+      "AI-driven perfume recommendation system based on lifestyle and age groups",
+    image: "/projects/blank.jpg",
+    technologies: ["Python", "Tkinter", "ML Libraries"],
+    links: {
+      github: "https://github.com/Wisitt/perfume-prediction"
+    },
+    status: "COMPLETED",
+    year: "2023",
+    metrics: {
+      performance: 85,
+      users: "",
+      impact: "85% match accuracy"
+    },
+    details: {
+      features: [
+        "Lifestyle-based recommendation engine",
+        "Age group customization",
+        "Machine learning prediction model",
+        "User-friendly GUI interface"
+      ],
+      impact: "Achieved 85% recommendation accuracy rate"
+    }
+  },
+  // {
+  //   title: "Book Selling Website",
+  //   description: "Online book store with CRUD functionality using PDO",
+  //   image: "/projects/blank.jpg",
+  //   technologies: ["PHP", "Bootstrap", "MySQL"],
+  //   links: {
+  //     github: "https://github.com/Wisitt/bookstore"
+  //   },
+  //   status: "ARCHIVED",
+  //   year: "2022",
+  //   metrics: {
+  //     performance: 80,
+  //     users: "Educational",
+  //     impact: "Core web dev skills"
+  //   },
+  //   details: {
+  //     features: [
+  //       "Book catalog with search and filter",
+  //       "User authentication system",
+  //       "Shopping cart functionality",
+  //       "Order processing and tracking"
+  //     ],
+  //     impact: "Fundamental learning of database CRUD operations"
+  //   }
+  // },
+  // {
+  //   title: "Book Rental System",
+  //   description: "Library management system for renting and borrowing books",
+  //   image: "/projects/blank.jpg",
+  //   technologies: ["C#", "SQL Server"],
+  //   links: {
+  //     github: "https://github.com/Wisitt/book-rental-system"
+  //   },
+  //   status: "EDUCATIONAL",
+  //   year: "2022",
+  //   metrics: {
+  //     performance: 78,
+  //     users: "College project",
+  //     impact: "Desktop app development"
+  //   },
+  //   details: {
+  //     features: [
+  //       "Book inventory management",
+  //       "Member registration system",
+  //       "Rental tracking and late fees",
+  //       "Reporting and statistics"
+  //     ],
+  //     impact: "First complete C# application with database integration"
+  //   }
+  // },
+  {
+    title: "2D Platformer Game",
+    description: "Developed a 2D side-scrolling platformer game",
+    image: "/projects/jumphell.jpg",
+    technologies: ["Construct", "Firebase"],
+    links: {
+      // github: "https://github.com/Wisitt/platformer-game",
+      live:"https://game-for-fun-by-wisit.web.app/"
+    },
+    status: "STUDY",
+    year: "2019",
+    metrics: {
+      performance: 75,
+      users: "Game dev learning",
+      impact: "Game development skills"
+    },
+    details: {
+      features: [
+        "Side-scrolling mechanics",
+        "Character progression system",
+        "Level design and obstacles",
+        "Score tracking with leaderboard"
+      ],
+      impact: "Introduction to game development fundamentals"
     }
   }
-]
+];
 
-import { LucideIcon } from "lucide-react"
+import { LucideIcon } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 
 function MetricItem({
   icon: Icon,
   value,
   label
 }: {
-  icon: LucideIcon
-  value: string
-  label: string
+  icon: LucideIcon;
+  value: string;
+  label: string;
 }) {
   return (
     <div className="text-center group">
       <div className="relative">
-        {/* Slightly reduce animation complexity for faster rendering */}
         <Icon className="w-4 h-4 text-[#00ff9d] mx-auto mb-1 group-hover:scale-110 transition-transform" />
       </div>
       <div className="text-[#00ffff] text-lg font-mono group-hover:text-[#00ffff] transition-colors">
@@ -162,28 +284,22 @@ function MetricItem({
         {label}
       </div>
     </div>
-  )
+  );
 }
 
-function ProjectCard({
-  project,
-  index
-}: {
-  project: Project
-  index: number
-}) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [showDetails, setShowDetails] = useState(false)
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   return (
     <motion.div
-      className="w-full md:w-1/2 lg:w-1/3 p-3"
+      className="flex-shrink-0 w-full md:w-full lg:w-full p-3 h-full"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <motion.div
-        className="bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-6 rounded-lg relative overflow-hidden h-full flex flex-col"
+        className="bg-black/50 border border-[#00ff9d]/10 p-6 rounded-lg relative overflow-hidden h-full flex flex-col"
         whileHover={{
           scale: 1.02,
           boxShadow: "0 0 20px rgba(0,255,157,0.2)"
@@ -205,29 +321,31 @@ function ProjectCard({
             initial={{ opacity: 0 }}
             animate={{ opacity: isHovered ? 1 : 0 }}
           />
-          <motion.div
-            className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <motion.a
-              href={project.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full bg-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/30 transition-colors border border-[#00ff9d]/30"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Github className="w-6 h-6" />
-            </motion.a>
-            <motion.a
-              href={project.links.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full bg-[#00ffff]/20 text-[#00ffff] hover:bg-[#00ffff]/30 transition-colors border border-[#00ffff]/30"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ExternalLink className="w-6 h-6" />
-            </motion.a>
+          <motion.div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            {project.links.github && (
+              <motion.a
+                href={project.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/30 transition-colors border border-[#00ff9d]/30"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Github className="w-6 h-6" />
+              </motion.a>
+            )}
+            {project.links.live && (
+              <motion.a
+                href={project.links.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-[#00ffff]/20 text-[#00ffff] hover:bg-[#00ffff]/30 transition-colors border border-[#00ffff]/30"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ExternalLink className="w-6 h-6" />
+              </motion.a>
+            )}
           </motion.div>
         </motion.div>
 
@@ -267,23 +385,7 @@ function ProjectCard({
                 </span>
               ))}
             </div>
-            <div className="grid grid-cols-3 gap-2 border-t border-[#00ff9d]/10 pt-2">
-              <MetricItem
-                icon={Activity}
-                value={`${project.metrics.performance}%`}
-                label="Performance"
-              />
-              <MetricItem
-                icon={Users}
-                value={project.metrics.users}
-                label="Active Users"
-              />
-              <MetricItem
-                icon={Server}
-                value={project.metrics.uptime}
-                label="Uptime"
-              />
-            </div>
+
           </div>
           <AnimatePresence>
             {showDetails && (
@@ -294,7 +396,9 @@ function ProjectCard({
                 className="pt-2 mt-3 border-t border-[#00ff9d]/10"
               >
                 <div className="space-y-3">
-                  <h4 className="text-[#00ffff] font-mono text-sm">Key Features:</h4>
+                  <h4 className="text-[#00ffff] font-mono text-sm">
+                    Key Features:
+                  </h4>
                   <ul className="space-y-2">
                     {project.details.features.map((feature, i) => (
                       <motion.li
@@ -319,42 +423,86 @@ function ProjectCard({
         </div>
       </motion.div>
     </motion.div>
-  )
+  );
 }
 
 export default function Portfolio() {
-  const [currentTime, setCurrentTime] = useState("")
-  const backgroundRef = useRef<HTMLDivElement>(null)
+  const [currentTime, setCurrentTime] = useState("");
+  const [currentUser] = useState("Wisitt");
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [carouselWidth, setCarouselWidth] = useState(0);
+  const [dragX, setDragX] = useState(0);
+  const [carouselPosition, setCarouselPosition] = useState(0);
+  const [activeDot, setActiveDot] = useState(0);
 
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date()
-      setCurrentTime(now.toISOString().slice(0, 19).replace("T", " "))
+      const now = new Date();
+      setCurrentTime(now.toISOString().slice(0, 19).replace("T", " "));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const calculateWidth = () => {
+      if (carouselRef.current) {
+        const containerWidth =
+          carouselRef.current.parentElement?.offsetWidth || 0;
+        const totalScrollWidth =
+          carouselRef.current.scrollWidth - containerWidth;
+        setCarouselWidth(Math.max(0, totalScrollWidth));
+      }
+    };
+    calculateWidth();
+    window.addEventListener("resize", calculateWidth);
+    return () => window.removeEventListener("resize", calculateWidth);
+  }, []);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      const cardWidth = 380;
+      const currentIndex = Math.round(Math.abs(carouselPosition) / cardWidth);
+      setActiveDot(Math.min(currentIndex, projects.length - 1));
     }
-    updateTime()
-    const interval = setInterval(updateTime, 1000)
-    return () => clearInterval(interval)
-  }, [])
+  }, [carouselPosition]);
+
+  const handleNavClick = (direction: "prev" | "next") => {
+    if (carouselRef.current) {
+      const containerWidth =
+        carouselRef.current.parentElement?.offsetWidth || 0;
+      const scrollAmount = containerWidth * 0.8;
+      let newPosition =
+        direction === "next"
+          ? carouselPosition - scrollAmount
+          : carouselPosition + scrollAmount;
+      newPosition = Math.max(-carouselWidth, Math.min(0, newPosition));
+      setCarouselPosition(newPosition);
+    }
+  };
+
+  const handleDotClick = (index: number) => {
+    const cardWidth = 380;
+    const newPosition = -index * cardWidth;
+    setCarouselPosition(Math.max(-carouselWidth, Math.min(0, newPosition)));
+  };
+
+  const handleDrag = (info: PanInfo) => {
+    const newDragX = dragX + info.delta.x;
+    const newPosition = Math.max(-carouselWidth, Math.min(0, newDragX));
+    setDragX(newDragX);
+    setCarouselPosition(newPosition);
+  };
+
+  const handleDragStart = () => {
+    setDragX(carouselPosition);
+  };
 
   return (
     <section className="py-16 bg-[#0a0a0a] overflow-hidden relative">
-      {/* Simplified background grid for faster rendering */}
-      <div ref={backgroundRef} className="absolute inset-0">
-        <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.08]">
-          {[...Array(50)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="border-[0.5px] border-[#00ff9d]/20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.003 }}
-            />
-          ))}
-        </div>
-      </div>
-
       <motion.div
-        className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/80 border-b border-[#00ff9d]/10"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -368,7 +516,7 @@ export default function Portfolio() {
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-3 h-3 text-[#00ffff]" />
-                <span className="text-[#00ffff]">user: Wisitt</span>
+                <span className="text-[#00ffff]">user: {currentUser}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -380,65 +528,52 @@ export default function Portfolio() {
       </motion.div>
 
       <div className="container mx-auto px-4 mt-12">
-        <motion.div
-          className="text-center space-y-6 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="inline-block">
-            <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-4">
-              <span className="text-[#00ff9d]">$</span>{" "}
-              <span className="text-[#00ffff]">load</span>{" "}
-              <span className="text-[#00ff9d]">project_matrix</span>{" "}
-              <span className="text-[#00ffff]">--showcase</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold font-mono">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
-                Projects.showcase();
-              </span>
-            </h2>
-          </div>
-        </motion.div>
-
-        {/* Responsive grid to replace horizontal scroll */}
-        <div className="flex flex-wrap">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.title} project={project} index={index} />
-          ))}
-        </div>
-
-        <motion.div
-          className="flex items-center justify-center gap-2 mt-8 text-[#00ff9d]/60 font-mono"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-        >
-          <Code2 className="w-4 h-4" />
-          <span className="text-sm">Hover over projects for more details</span>
-          <ArrowRight className="w-4 h-4" />
-        </motion.div>
-
-        <motion.div
-          className="mt-10 text-center font-mono space-y-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          <div className="text-[#00ff9d]/60 space-y-1 text-xs">
-            <div className="flex items-center justify-center gap-4">
-              <span>Projects loaded: {projects.length}</span>
-              <span>System integrity: 100%</span>
-            </div>
-          </div>
-          <div className="text-[#00ffff]/40 text-xs">
-            <span className="mr-2">@{process.env.NEXT_PUBLIC_USERNAME || "Wisitt"}</span>
-            <span>{currentTime} UTC</span>
-          </div>
-        </motion.div>
+  <motion.div
+    className="text-center space-y-6 mb-10"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+  >
+    <div className="inline-block">
+      <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-4">
+        <span className="text-[#00ff9d]">$</span>{" "}
+        <span className="text-[#00ffff]">load</span>{" "}
+        <span className="text-[#00ff9d]">project_matrix</span>{" "}
+        <span className="text-[#00ffff]">--showcase</span>
       </div>
+      <h2 className="text-4xl md:text-5xl font-bold font-mono">
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
+          Projects.showcase();
+        </span>
+      </h2>
+    </div>
+  </motion.div>
 
-      {/* Reduced data stream effect for performance */}
+  <Carousel>
+    <CarouselPrevious className="bg-black/50 border border-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/10" />
+    <CarouselContent>
+      {projects.map((project, index) => (
+        <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+          <ProjectCard key={project.title} project={project} index={index} />
+        </CarouselItem>
+      ))}
+    </CarouselContent>
+    <CarouselNext className="bg-black/50 border border-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/10" />
+  </Carousel>
+
+  <motion.div
+    className="flex items-center justify-center gap-2 mt-8 text-[#00ff9d]/60 font-mono"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.8 }}
+  >
+    <Code2 className="w-4 h-4" />
+    <span className="text-sm">Drag freely to explore projects</span>
+    <ArrowRight className="w-4 h-4" />
+  </motion.div>
+</div>
+
+
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(5)].map((_, i) => (
           <motion.div
@@ -454,14 +589,16 @@ export default function Portfolio() {
             }}
           >
             {[...Array(Math.floor(Math.random() * 15) + 5)].map((_, j) => (
-              <div key={j}>{String.fromCharCode(0x30a0 + Math.random() * 96)}</div>
+              <div key={j}>
+                {String.fromCharCode(0x30a0 + Math.random() * 96)}
+              </div>
             ))}
           </motion.div>
         ))}
       </div>
 
       <motion.div
-        className="fixed bottom-4 right-4 px-4 py-2 bg-black/80 backdrop-blur-sm border border-[#00ff9d]/20 rounded-lg font-mono text-xs"
+        className="fixed bottom-4 right-4 px-4 py-2 bg-black/80 border border-[#00ff9d]/20 rounded-lg font-mono text-xs"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
@@ -475,5 +612,5 @@ export default function Portfolio() {
         </div>
       </motion.div>
     </section>
-  )
+  );
 }

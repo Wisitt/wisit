@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Terminal, Clock, Shield, Database, Cpu, Code2 } from "lucide-react"
+import { Terminal, Clock, Shield, Database, Cpu, Code2, Laptop, Network, ShieldCheck } from "lucide-react"
 import { IconType } from "react-icons"
-import { FaReact, FaNodeJs, FaGitAlt, FaDocker, FaFigma } from "react-icons/fa"
+import { FaReact, FaNodeJs, FaGitAlt, FaDocker, FaFigma, FaAws, FaCss3Alt, FaHtml5, FaSass } from "react-icons/fa"
 import { 
   SiNextdotjs, 
   SiTypescript, 
@@ -15,7 +15,22 @@ import {
   SiPrisma,
   SiGraphql,
   SiMongodb,
-  SiRedux
+  SiRedux,
+  SiAngular,
+  SiExpress,
+  SiMysql,
+  SiRailway,
+  SiRender,
+  SiGithubactions,
+  SiJenkins,
+  SiGitlab,
+  SiCypress,
+  SiJest,
+  SiTestinglibrary,
+  SiBootstrap,
+  SiMui,
+  SiAntdesign,
+  SiShadcnui
 } from "react-icons/si"
 
 // Types
@@ -28,10 +43,10 @@ interface Skill {
   type: "primary" | "secondary"
 }
 
-interface SkillCategory {
+interface SkillCategoryData {
   category: string
   command: string
-  icon: typeof Cpu | typeof Code2
+  icon: typeof Cpu | typeof Code2 | typeof ShieldCheck | typeof Laptop | typeof Network
   description: string
   items: Skill[]
 }
@@ -61,7 +76,6 @@ const useIntersectionObserver = (options = {}) => {
   return [elementRef, isVisible] as const
 }
 
-
 // Custom hook for updating current time
 const useCurrentTime = (initialTime: string) => {
   const [time, setTime] = useState(initialTime)
@@ -80,17 +94,16 @@ const useCurrentTime = (initialTime: string) => {
   return time
 }
 
-const SkillCategory = ({ category, categoryIndex }: { category: SkillCategory; categoryIndex: number }) => {
+const SkillCategoryComponent = ({ category, categoryIndex }: { category: SkillCategoryData; categoryIndex: number }) => {
   const [categoryRef, isCategoryVisible] = useIntersectionObserver()
 
   return (
     <div
       ref={categoryRef}
       className={`
-        space-y-8 transition-all duration-500
+        space-y-8
         ${isCategoryVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}
       `}
-      style={{ transitionDelay: `${categoryIndex * 200}ms` }}
     >
       <div className="text-center space-y-4">
         <div className="inline-block">
@@ -111,7 +124,7 @@ const SkillCategory = ({ category, categoryIndex }: { category: SkillCategory; c
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {category.items.map((skill, index) => (
           <SkillCard key={skill.name} skill={skill} index={index} />
         ))}
@@ -128,14 +141,12 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
     <div
       ref={ref}
       className={`
-        transition-all duration-500 transform
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}
       `}
-      style={{ transitionDelay: `${index * 100}ms` }}
     >
       <Card 
         className={`
-          relative group transition-all duration-300 
+          relative group
           backdrop-blur-sm bg-black/50 border-[#00ff9d]/10
           hover:border-[#00ff9d]/50
         `}
@@ -146,13 +157,13 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
           <div className="flex flex-col items-center justify-center space-y-3">
             {/* Icon Container */}
             <div className={`
-              relative transition-transform duration-300
+              relative
               ${isHovered ? 'scale-110' : ''}
             `}>
               <skill.icon 
                 className={`
                   w-8 h-8 md:w-10 md:h-10 relative z-10
-                  transition-transform duration-300
+                 
                   ${isHovered ? 'animate-spin-slow' : ''}
                 `}
                 style={{ color: skill.color }} 
@@ -160,7 +171,6 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
               <div
                 className={`
                   absolute inset-0 rounded-full blur-xl -z-10
-                  transition-all duration-300
                   ${isHovered ? 'animate-pulse' : ''}
                 `}
                 style={{ 
@@ -181,7 +191,6 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
                 <div
                   className={`
                     h-full bg-gradient-to-r from-[#00ff9d] to-[#00ffff]
-                    transition-all duration-1000 ease-out
                   `}
                   style={{ 
                     width: isVisible ? `${skill.proficiency}%` : '0%'
@@ -199,7 +208,6 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
           <div
             className={`
               absolute inset-0 bg-black/90 flex items-center justify-center p-4
-              transition-opacity duration-300
               ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}
             `}
           >
@@ -218,38 +226,37 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
   )
 }
 
-interface Skill {
-  name: string
-  icon: IconType
-  color: string
-  proficiency: number
-  experience: string
-  type: "primary" | "secondary"
-}
-
-interface SkillCategory {
-  category: string
-  command: string
-  icon: typeof Cpu | typeof Code2
-  description: string
-  items: Skill[]
-}
-
-const skills: SkillCategory[] = [
+const skills: SkillCategoryData[] = [
   {
     category: "Frontend Systems",
     command: "scan_frontend_matrix",
     icon: Code2,
     description: "Advanced UI/UX technologies and frameworks",
     items: [
-      { name: "React", icon: FaReact, color: "#00ff9d", proficiency: 95, experience: "4 years", type: "primary" },
-      { name: "Next.js", icon: SiNextdotjs, color: "#00ffff", proficiency: 90, experience: "3 years", type: "primary" },
-      { name: "TypeScript", icon: SiTypescript, color: "#00ff9d", proficiency: 92, experience: "3 years", type: "primary" },
-      { name: "JavaScript", icon: SiJavascript, color: "#00ffff", proficiency: 95, experience: "4 years", type: "primary" },
-      { name: "Redux", icon: SiRedux, color: "#00ff9d", proficiency: 88, experience: "3 years", type: "secondary" },
-      { name: "Tailwind", icon: SiTailwindcss, color: "#00ffff", proficiency: 94, experience: "2 years", type: "primary" },
-      { name: "Framer", icon: SiFramer, color: "#00ff9d", proficiency: 85, experience: "2 years", type: "secondary" },
-      { name: "Figma", icon: FaFigma, color: "#00ffff", proficiency: 88, experience: "2 years", type: "secondary" },
+      { name: "React", icon: FaReact, color: "#00ff9d", proficiency: 90, experience: "≈1.5 years", type: "primary" },
+      { name: "Next.js", icon: SiNextdotjs, color: "#00ffff", proficiency: 90, experience: "≈1.5 years", type: "primary" },
+      { name: "Angular", icon: SiAngular, color: "#dd0031", proficiency: 100, experience: "2+ years", type: "primary" },
+      { name: "TypeScript", icon: SiTypescript, color: "#3178c6", proficiency: 90, experience: "2+ years", type: "primary" },
+      { name: "JavaScript", icon: SiJavascript, color: "#f7df1e", proficiency: 90, experience: "2+ years", type: "primary" },
+      { name: "Redux", icon: SiRedux, color: "#764abc", proficiency: 80, experience: "≈1 year", type: "secondary" },
+      { name: "HTML5", icon: FaHtml5, color: "#e34f26", proficiency: 95, experience: "2+ years", type: "primary" },
+      { name: "Framer", icon: SiFramer, color: "#0055ff", proficiency: 80, experience: "≈1 year", type: "secondary" },
+    ]
+  },
+  {
+    category: "UI Libraries & Styling",
+    command: "render_ui_components",
+    icon: Laptop,
+    description: "Design systems and styling frameworks",
+    items: [
+      { name: "Tailwind", icon: SiTailwindcss, color: "#38bdf8", proficiency: 100, experience: "2+ years", type: "primary" },
+      { name: "CSS3", icon: FaCss3Alt, color: "#264de4", proficiency: 95, experience: "2+ years", type: "primary" },
+      { name: "SCSS", icon: FaSass, color: "#cc6699", proficiency: 90, experience: "2+ years", type: "primary" },
+      { name: "MUI", icon: SiMui, color: "#007fff", proficiency: 85, experience: "≈1.5 years", type: "primary" },
+      { name: "Bootstrap", icon: SiBootstrap, color: "#7952b3", proficiency: 90, experience: "2+ years", type: "primary" },
+      { name: "Shadcn UI", icon: SiShadcnui, color: "#00ffff", proficiency: 85, experience: "≈1 year", type: "secondary" },
+      { name: "Ant Design", icon: SiAntdesign, color: "#0170fe", proficiency: 80, experience: "≈1 year", type: "secondary" },
+      { name: "Figma", icon: FaFigma, color: "#f24e1e", proficiency: 100, experience: "≈2 years", type: "secondary" },
     ]
   },
   {
@@ -258,19 +265,41 @@ const skills: SkillCategory[] = [
     icon: Cpu,
     description: "Server-side technologies and database systems",
     items: [
-      { name: "Node.js", icon: FaNodeJs, color: "#00ff9d", proficiency: 92, experience: "4 years", type: "primary" },
-      { name: "PostgreSQL", icon: SiPostgresql, color: "#00ffff", proficiency: 88, experience: "3 years", type: "primary" },
-      { name: "Prisma", icon: SiPrisma, color: "#00ff9d", proficiency: 90, experience: "2 years", type: "primary" },
-      { name: "GraphQL", icon: SiGraphql, color: "#00ffff", proficiency: 85, experience: "2 years", type: "secondary" },
-      { name: "MongoDB", icon: SiMongodb, color: "#00ff9d", proficiency: 87, experience: "3 years", type: "primary" },
-      { name: "Docker", icon: FaDocker, color: "#00ffff", proficiency: 86, experience: "2 years", type: "secondary" },
-      { name: "Git", icon: FaGitAlt, color: "#00ff9d", proficiency: 93, experience: "4 years", type: "primary" }
+      { name: "Node.js", icon: FaNodeJs, color: "#339933", proficiency: 80, experience: "≈1.5 years", type: "primary" },
+      { name: "Express", icon: SiExpress, color: "#ffffff", proficiency: 80, experience: "≈1 years", type: "primary" },
+      { name: "PostgreSQL", icon: SiPostgresql, color: "#336791", proficiency: 70, experience: "≈1.5 years", type: "primary" },
+      { name: "MySQL", icon: SiMysql, color: "#4479a1", proficiency: 70, experience: "≈2 years", type: "primary" },
+      { name: "Prisma", icon: SiPrisma, color: "#5a67d8", proficiency: 90, experience: "≈1 year", type: "primary" },
+      { name: "AWS", icon: FaAws, color: "#ff9900", proficiency: 65, experience: "≈1 year", type: "secondary" },
+      { name: "Railway", icon: SiRailway, color: "#0b0d0e", proficiency: 70, experience: "≈1 year", type: "secondary" },
+      { name: "Render", icon: SiRender, color: "#46e3b7", proficiency: 70, experience: "≈1 year", type: "secondary" }
+    ]
+  },
+  {
+    category: "DevOps & CI/CD",
+    command: "initialize_deployment_pipeline",
+    icon: Network,
+    description: "Deployment, containerization and continuous integration",
+    items: [
+      { name: "Git", icon: FaGitAlt, color: "#f05032", proficiency: 100, experience: "2+ years", type: "primary" },
+      { name: "Docker", icon: FaDocker, color: "#2496ed", proficiency: 70, experience: "≈1 year", type: "secondary" },
+      { name: "GitHub Actions", icon: SiGithubactions, color: "#2088ff", proficiency: 75, experience: "≈1.5 year", type: "secondary" },
+      { name: "GitLab CI", icon: SiGitlab, color: "#fc6d26", proficiency: 65, experience: "≈1.5 year", type: "secondary" }
+    ]
+  },
+  {
+    category: "Testing Tools",
+    command: "execute_test_suite",
+    icon: ShieldCheck,
+    description: "Quality assurance and testing frameworks",
+    items: [
+      { name: "Cypress", icon: SiCypress, color: "#17202c", proficiency: 80, experience: "≈1.5 years", type: "primary" },
     ]
   }
 ]
 
 export default function Skills() {
-  const currentTime = useCurrentTime("2025-02-22 00:59:31")
+  const currentTime = useCurrentTime("2025-03-19 14:29:40")
   const [headerRef, isHeaderVisible] = useIntersectionObserver()
   const [gridRef, isGridVisible] = useIntersectionObserver()
 
@@ -287,10 +316,8 @@ export default function Skills() {
               key={i}
               className={`
                 border-[0.5px] border-[#00ff9d]/20
-                transition-opacity duration-300
                 ${isGridVisible ? 'opacity-100' : 'opacity-0'}
               `}
-              style={{ transitionDelay: `${i * 5}ms` }}
             />
           ))}
         </div>
@@ -301,7 +328,6 @@ export default function Skills() {
         className={`
           fixed top-0 left-0 right-0 z-50 
           bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10
-          transition-transform duration-500
           ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}
         `}
       >
@@ -331,7 +357,7 @@ export default function Skills() {
           <div className="text-center space-y-6">
             <div
               className={`
-                inline-block transition-all duration-500
+                inline-block
                 ${isHeaderVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}
               `}
             >
@@ -364,7 +390,7 @@ export default function Skills() {
 
           {/* Skills Categories */}
           {skills.map((category, index) => (
-            <SkillCategory 
+            <SkillCategoryComponent 
               key={category.category} 
               category={category} 
               categoryIndex={index} 
@@ -374,7 +400,7 @@ export default function Skills() {
           {/* Terminal Footer */}
           <div
             className={`
-              text-center font-mono space-y-2 transition-all duration-500
+              text-center font-mono space-y-2
               ${isHeaderVisible ? 'opacity-100' : 'opacity-0'}
             `}
           >

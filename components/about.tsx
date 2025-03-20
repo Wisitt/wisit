@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { Card } from "@/components/ui/card"
-import { Terminal,Cpu,ChevronRight } from "lucide-react"
+import { Terminal,Cpu,ChevronRight, Code } from "lucide-react"
 import { motion } from "framer-motion"
 
 // Types
@@ -36,15 +36,23 @@ const useIntersectionObserver = (options = {}) => {
 
 const milestones = [
   { 
-    year: "2025",
-    title: "AI Integration Specialist",
-    description: "Leading AI-driven development and implementation of cutting-edge solutions",
-    icon: Cpu,
-    tech: ["TensorFlow", "PyTorch", "OpenAI API"],
-    achievement: "Successfully deployed 5 major AI-powered features",
-    codeSnippet: "async function enhanceAI() {"
+    year: "2020 - 2024",
+    title: "Front-End Developer (Contract) - Unigainfo Tech",
+    description: "Developed and maintained Health Benefit Consultant Systems using Angular.",
+    icon: Code,
+    tech: ["Angular", "NgRx", "Cypress", "GitHub Actions", "REST API"],
+    achievement: "Implemented key UI components and optimized system performance.",
+    codeSnippet: "<div>Sample Code Snippet for 2020 - 2024</div>"
   },
-  // ... other milestones
+  {
+    year: "2017 - 2020",
+    title: "Front-End Developer (Intern) - Unigainfo Tech",
+    description: "Contributed to Angular-based projects and gained experience in Agile development.",
+    icon: Code,
+    tech: ["Angular", "Cypress", "State Management", "Agile"],
+    achievement: "Performed system-wide testing and collaborated with cross-functional teams.",
+    codeSnippet: "<div>Sample Code Snippet for 2017 - 2020</div>"
+  }
 ]
 
 const MilestoneCard = ({ milestone, index }: { 

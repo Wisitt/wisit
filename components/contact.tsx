@@ -22,7 +22,9 @@ import {
   Signal,
   Zap,
   Download,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle,
+  Check
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
@@ -171,7 +173,6 @@ function SecurityIndicator() {
   )
 }
 
-
 function ConnectionStatus() {
   const [connectionStrength, setConnectionStrength] = useState(0)
 
@@ -199,6 +200,80 @@ function ConnectionStatus() {
   )
 }
 
+// Custom toast component to match the theme
+function CyberToast({ 
+  title, 
+  message, 
+  type = "success" 
+}: { 
+  title: string; 
+  message: string; 
+  type?: "success" | "error"; 
+}) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }} 
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className={`fixed top-24 right-4 z-50 w-80 max-w-[90vw] font-mono backdrop-blur-md rounded-lg overflow-hidden
+        ${type === "success" ? "bg-black/80 border-2 border-[#00ff9d]/50" : "bg-black/80 border-2 border-[#ff0055]/50"}`}
+    >
+      <div className={`px-1 py-0.5 ${type === "success" ? "bg-[#00ff9d]/20" : "bg-[#ff0055]/20"} flex items-center justify-between`}>
+        <div className="flex items-center gap-2">
+          {type === "success" ? (
+            <Check className="w-3 h-3 text-[#00ff9d]" />
+          ) : (
+            <AlertCircle className="w-3 h-3 text-[#ff0055]" />
+          )}
+          <span className={`text-xs ${type === "success" ? "text-[#00ff9d]" : "text-[#ff0055]"}`}>
+            {title}
+          </span>
+        </div>
+        <span className={`text-xs ${type === "success" ? "text-[#00ff9d]/60" : "text-[#ff0055]/60"}`}>
+          {new Date().toISOString().substring(11, 19)}
+        </span>
+      </div>
+      
+      <div className="p-3">
+        <p className={`text-sm mb-2 ${type === "success" ? "text-[#00ffff]" : "text-[#ff9999]"}`}>
+          {message}
+        </p>
+        
+        <div className="flex justify-between items-center text-xs">
+          <div className="flex items-center gap-2">
+            <Shield className={`w-3 h-3 ${type === "success" ? "text-[#00ff9d]/60" : "text-[#ff0055]/60"}`} />
+            <span className={type === "success" ? "text-[#00ff9d]/60" : "text-[#ff0055]/60"}>
+              STATUS: {type === "success" ? "CONFIRMED" : "FAILED"}
+            </span>
+          </div>
+          
+          <motion.div 
+            animate={{ 
+              opacity: [0.6, 1, 0.6],
+            }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className={`h-1.5 w-1.5 rounded-full ${type === "success" ? "bg-[#00ff9d]" : "bg-[#ff0055]"}`} 
+          />
+        </div>
+      </div>
+      
+      <motion.div 
+        className="h-1 w-full bg-black/50"
+        initial={{ width: "0%" }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 3 }}
+      >
+        <motion.div 
+          className={`h-full ${type === "success" ? "bg-[#00ff9d]" : "bg-[#ff0055]"}`}
+          initial={{ width: "100%" }}
+          animate={{ width: "0%" }}
+          transition={{ duration: 3 }}
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: "",
@@ -207,7 +282,14 @@ export default function Contact() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitProgress, setSubmitProgress] = useState(0)
-  const [currentTime, setCurrentTime] = useState("2025-02-21 18:32:02")
+  const [currentTime, setCurrentTime] = useState("2025-03-19 16:01:23")
+  const [currentUser] = useState("Wisitt")
+  const [showCustomToast, setShowCustomToast] = useState(false)
+  const [toastData, setToastData] = useState({
+    title: "",
+    message: "",
+    type: "success" as "success" | "error"
+  })
   const { toast } = useToast()
   const formRef = useRef<HTMLFormElement>(null)
   const isInView = useInView(formRef, { once: false })
@@ -254,6 +336,16 @@ export default function Contact() {
       );
   
       if (response.status === 200) {
+        // Display custom themed toast
+        setToastData({
+          title: "[ TRANSMISSION SUCCESSFUL ]",
+          message: "Quantum encryption secured. Message delivered to neural network. Awaiting response...",
+          type: "success"
+        });
+        setShowCustomToast(true);
+        setTimeout(() => setShowCustomToast(false), 4000);
+        
+        // Still use the built-in toast for accessibility
         toast({
           title: "[ SUCCESS ] Message transmitted",
           description: "Quantum encryption secured. Awaiting response...",
@@ -264,6 +356,16 @@ export default function Contact() {
   
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
+      // Display custom themed toast for error
+      setToastData({
+        title: "[ TRANSMISSION ERROR ]",
+        message: "Neural network connection interrupted. Security protocols engaged. Retry sequence initiated.",
+        type: "error"
+      });
+      setShowCustomToast(true);
+      setTimeout(() => setShowCustomToast(false), 4000);
+      
+      // Still use the built-in toast for accessibility
       toast({
         title: "[ ERROR ] Transmission failed",
         description: "Neural network connection interrupted. Retry sequence initiated.",
@@ -309,7 +411,7 @@ export default function Contact() {
               </div>
               <div className="flex items-center gap-2">
                 <User className="w-3 h-3 text-[#00ffff]" />
-                <span className="text-[#00ffff]">user: Wisitt</span>
+                <span className="text-[#00ffff]">user: {currentUser}</span>
               </div>
               <ConnectionStatus  />
             </div>
@@ -320,6 +422,17 @@ export default function Contact() {
           </div>
         </div>
       </motion.div>
+
+      {/* Custom Toast Notification */}
+      <AnimatePresence>
+        {showCustomToast && (
+          <CyberToast 
+            title={toastData.title} 
+            message={toastData.message} 
+            type={toastData.type} 
+          />
+        )}
+      </AnimatePresence>
 
       <div className="container mx-auto px-2 sm:px-4">
         <motion.div
@@ -365,31 +478,31 @@ export default function Contact() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <FormField
                 id="name"
-                label="Identify"
+                label="Full Name"
                 icon={User}
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Enter your identifier"
+                placeholder="Enter your full name"
               />
               <FormField
                 id="email"
-                label="Neural Link"
+                label="Email Address"
                 icon={Mail}
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Enter your neural link"
+                placeholder="example@mail.com"
               />
             </div>
 
             <FormField
               id="message"
-              label="Data Transmission"
+              label="Your Message"
               icon={MessageSquare}
               type="textarea"
               value={formData.message}
               onChange={handleChange}
-              placeholder="Initialize message sequence..."
+              placeholder="How can I assist you?"
             />
 
             <motion.button
@@ -411,12 +524,12 @@ export default function Contact() {
                 {isSubmitting ? (
                   <>
                     <Download className="w-5 h-5 animate-pulse" />
-                    <span>TRANSMITTING... {submitProgress}%</span>
+                    <span>Sending... {submitProgress}%</span>
                   </>
                 ) : (
                   <>
                     <Zap className="w-5 h-5" />
-                    <span>INITIATE TRANSMISSION</span>
+                    <span>Send Message</span>
                   </>
                 )}
                 <ChevronRight className="w-4 h-4" />
@@ -526,7 +639,7 @@ export default function Contact() {
               </div>
             </div>
             <div className="text-[#00ffff]/40 text-xs">
-              <span className="mr-2">@{process.env.NEXT_PUBLIC_USERNAME || 'Wisitt'}</span>
+              <span className="mr-2">@{currentUser}</span>
               <span>{currentTime} UTC</span>
             </div>
           </motion.div>
