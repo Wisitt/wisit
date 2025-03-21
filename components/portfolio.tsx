@@ -47,11 +47,11 @@ const projects: Project[] = [
     title: "FinTrack",
     description:
       "Personal finance tracking system with OCR receipt scanning for expense categorization",
-    image: "/projects/fintrack.jpg",
+    image: "/projects/blank.jpg",
     technologies: ["Next.js", "TypeScript", "Tailwind", "Supabase", "Vercel"],
     links: {
-      github: "https://github.com/Wisitt/fintrack",
-      live: "https://fintrack.vercel.app"
+      github: "https://github.com/Wisitt/finance-scan",
+      live: "https://finance-scan.vercel.app/"
     },
     status: "LATEST",
     year: "2025",
@@ -74,7 +74,7 @@ const projects: Project[] = [
     title: "Salmon Reservation",
     description:
       "Online salmon booking and pricing system for sales representatives",
-    image: "/projects/salmon.jpg",
+    image: "/projects/blank.jpg",
     technologies: [
       "Next.js",
       "TypeScript",
@@ -84,7 +84,7 @@ const projects: Project[] = [
       "Vercel"
     ],
     links: {
-      github: "https://github.com/Wisitt/salmon-reservation",
+      github: "https://github.com/Wisitt/fish-booking-simiran",
       live: "https://salmon-reservation.vercel.app"
     },
     status: "STABLE",
@@ -108,11 +108,11 @@ const projects: Project[] = [
     title: "UniRoom",
     description:
       "Classroom reservation system for instructors and staff to prevent double bookings",
-    image: "/projects/uniroom.jpg",
+    image: "/projects/blank.jpg",
     technologies: ["React", "TypeScript", "Vite", "Tailwind", "Docker", "Nginx"],
     links: {
       github: "https://github.com/Wisitt/uniroom",
-      live: "https://uniroom-app.com"
+      // live: "https://uniroom-app.com"
     },
     status: "DEPLOYED",
     year: "2024",
@@ -135,10 +135,10 @@ const projects: Project[] = [
     title: "Facebook Clone",
     description:
       "Facebook clone developed using Angular to study social media platform functionalities",
-    image: "/projects/fbclone.jpg",
+    image: "/projects/blank.jpg",
     technologies: ["Angular", "TypeScript", "SCSS", "Firebase"],
     links: {
-      github: "https://github.com/Wisitt/facebook-clone"
+      github: "https://github.com/Wisitt/facebook-clone-wisit"
     },
     status: "STUDY",
     year: "2023",
