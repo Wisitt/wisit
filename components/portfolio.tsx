@@ -11,12 +11,7 @@ import {
   Code2,
   Clock,
   Shield,
-  Activity,
-  Users,
-  Server,
   Zap,
-  ChevronLeft,
-  ChevronRight
 } from "lucide-react";
 
 interface Project {
@@ -87,7 +82,7 @@ const projects: Project[] = [
       github: "https://github.com/Wisitt/fish-booking-simiran",
       live: "https://salmon-reservation.vercel.app"
     },
-    status: "STABLE",
+    status: "",
     year: "2024",
     metrics: {
       performance: 92,
@@ -111,10 +106,10 @@ const projects: Project[] = [
     image: "/projects/blank.jpg",
     technologies: ["React", "TypeScript", "Vite", "Tailwind", "Docker", "Nginx"],
     links: {
-      github: "https://github.com/Wisitt/uniroom",
+      github: "https://github.com/Wisitt/rv-project",
       // live: "https://uniroom-app.com"
     },
-    status: "DEPLOYED",
+    status: "",
     year: "2024",
     metrics: {
       performance: 90,
@@ -165,7 +160,7 @@ const projects: Project[] = [
     links: {
       github: "https://github.com/Wisitt/perfume-prediction"
     },
-    status: "COMPLETED",
+    status: "STUDY",
     year: "2023",
     metrics: {
       performance: 85,
@@ -260,32 +255,7 @@ const projects: Project[] = [
   }
 ];
 
-import { LucideIcon } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
-
-function MetricItem({
-  icon: Icon,
-  value,
-  label
-}: {
-  icon: LucideIcon;
-  value: string;
-  label: string;
-}) {
-  return (
-    <div className="text-center group">
-      <div className="relative">
-        <Icon className="w-4 h-4 text-[#00ff9d] mx-auto mb-1 group-hover:scale-110 transition-transform" />
-      </div>
-      <div className="text-[#00ffff] text-lg font-mono group-hover:text-[#00ffff] transition-colors">
-        {value}
-      </div>
-      <div className="text-xs text-[#00ff9d]/60 font-mono group-hover:text-[#00ff9d] transition-colors">
-        {label}
-      </div>
-    </div>
-  );
-}
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -431,9 +401,8 @@ export default function Portfolio() {
   const [currentUser] = useState("Wisitt");
   const carouselRef = useRef<HTMLDivElement>(null);
   const [carouselWidth, setCarouselWidth] = useState(0);
-  const [dragX, setDragX] = useState(0);
-  const [carouselPosition, setCarouselPosition] = useState(0);
-  const [activeDot, setActiveDot] = useState(0);
+  const [carouselPosition] = useState(0);
+  const [activeot, setActiveDot] = useState(0);
 
   useEffect(() => {
     const updateTime = () => {
@@ -468,36 +437,6 @@ export default function Portfolio() {
     }
   }, [carouselPosition]);
 
-  const handleNavClick = (direction: "prev" | "next") => {
-    if (carouselRef.current) {
-      const containerWidth =
-        carouselRef.current.parentElement?.offsetWidth || 0;
-      const scrollAmount = containerWidth * 0.8;
-      let newPosition =
-        direction === "next"
-          ? carouselPosition - scrollAmount
-          : carouselPosition + scrollAmount;
-      newPosition = Math.max(-carouselWidth, Math.min(0, newPosition));
-      setCarouselPosition(newPosition);
-    }
-  };
-
-  const handleDotClick = (index: number) => {
-    const cardWidth = 380;
-    const newPosition = -index * cardWidth;
-    setCarouselPosition(Math.max(-carouselWidth, Math.min(0, newPosition)));
-  };
-
-  const handleDrag = (info: PanInfo) => {
-    const newDragX = dragX + info.delta.x;
-    const newPosition = Math.max(-carouselWidth, Math.min(0, newDragX));
-    setDragX(newDragX);
-    setCarouselPosition(newPosition);
-  };
-
-  const handleDragStart = () => {
-    setDragX(carouselPosition);
-  };
 
   return (
     <section className="py-16 bg-[#0a0a0a] overflow-hidden relative">
