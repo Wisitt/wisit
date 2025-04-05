@@ -45,7 +45,7 @@ const useMilestones = () => useMemo(() => [
     icon: Code,
     tech: ["Angular", "NgRx", "Cypress", "GitHub Actions", "REST API"],
     achievement: "Implemented key UI components and optimized system performance.",
-    codeSnippet: "<div>Sample Code Snippet for 2020 - 2024</div>"
+    codeSnippet: ""
   },
   {
     year: "2017 - 2020",
@@ -54,7 +54,7 @@ const useMilestones = () => useMemo(() => [
     icon: Code,
     tech: ["Angular", "Cypress", "State Management", "Agile"],
     achievement: "Performed system-wide testing and collaborated with cross-functional teams.",
-    codeSnippet: "<div>Sample Code Snippet for 2017 - 2020</div>"
+    codeSnippet: ""
   }
 ], []);
 
@@ -173,7 +173,6 @@ const MilestoneCard = memo(({ milestone, index }: {
                   absolute inset-0 bg-gradient-to-r from-[#00ff9d]/5 to-transparent
                   group-hover/code:opacity-100 opacity-0 transition-opacity duration-300
                 " />
-                <code className="text-[#00ffff]">{milestone.codeSnippet}</code>
               </div>
 
               {/* Achievement */}

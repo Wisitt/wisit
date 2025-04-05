@@ -366,7 +366,6 @@ export default function Skills() {
                 <span className="text-[#00ff9d]">$</span>{" "}
                 <span className="text-[#00ffff]">initialize</span>{" "}
                 <span className="text-[#00ff9d]">skill_matrix</span>{" "}
-                <span className="text-[#00ffff]">--scan-depth=100</span>
               </div>
 
               <h2 className="text-4xl md:text-5xl font-bold font-mono">
