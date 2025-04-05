@@ -13,8 +13,6 @@ import {
   SiJavascript,
   SiPostgresql,
   SiPrisma,
-  SiGraphql,
-  SiMongodb,
   SiRedux,
   SiAngular,
   SiExpress,
@@ -22,11 +20,8 @@ import {
   SiRailway,
   SiRender,
   SiGithubactions,
-  SiJenkins,
   SiGitlab,
   SiCypress,
-  SiJest,
-  SiTestinglibrary,
   SiBootstrap,
   SiMui,
   SiAntdesign,
@@ -94,7 +89,7 @@ const useCurrentTime = (initialTime: string) => {
   return time
 }
 
-const SkillCategoryComponent = ({ category, categoryIndex }: { category: SkillCategoryData; categoryIndex: number }) => {
+const SkillCategoryComponent = ({ category }: { category: SkillCategoryData; categoryIndex: number }) => {
   const [categoryRef, isCategoryVisible] = useIntersectionObserver()
 
   return (
@@ -133,7 +128,7 @@ const SkillCategoryComponent = ({ category, categoryIndex }: { category: SkillCa
   )
 }
 
-function SkillCard({ skill, index }: { skill: Skill; index: number }) {
+function SkillCard({ skill }: { skill: Skill; index: number }) {
   const [ref, isVisible] = useIntersectionObserver()
   const [isHovered, setIsHovered] = useState(false)
 

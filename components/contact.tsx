@@ -296,12 +296,48 @@ export default function Contact() {
 
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date()
-      setCurrentTime(now.toISOString().slice(0, 19).replace('T', ' '))
+      const now = new Date();
+      
+      // Format in Thai timezone (UTC+7)
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: 'Asia/Bangkok',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+      
+      // Format using Intl API to get Thai timezone
+      const formatter = new Intl.DateTimeFormat('en-US', options);
+      const parts = formatter.formatToParts(now);
+      
+      // Build the formatted date string in YYYY-MM-DD HH:MM:SS format
+      const formattedDate = {
+        year: '', month: '', day: '', 
+        hour: '', minute: '', second: ''
+      };
+      
+      parts.forEach(part => {
+        if (part.type === 'year' || part.type === 'month' || part.type === 'day' || 
+            part.type === 'hour' || part.type === 'minute' || part.type === 'second') {
+          formattedDate[part.type] = part.value;
+        }
+      });
+      
+      // Create the Thai time in the required format
+      const thaiTimeString = 
+        `${formattedDate.year}-${formattedDate.month}-${formattedDate.day} ` +
+        `${formattedDate.hour}:${formattedDate.minute}:${formattedDate.second}`;
+      
+      setCurrentTime(thaiTimeString);
     }
-    updateTime()
-    const interval = setInterval(updateTime, 1000)
-    return () => clearInterval(interval)
+    
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
   }, [])
 
   const handleChange = (

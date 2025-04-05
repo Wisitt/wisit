@@ -2,12 +2,10 @@
 
 import { useEffect, useState, useRef, memo, useMemo } from "react"
 import { Card } from "@/components/ui/card"
-// Import icons individually to reduce bundle size
 
-import { LazyMotion, m, domAnimation } from "framer-motion" // Import only what's needed
+import { LazyMotion, m, domAnimation } from "framer-motion"
 import { ChevronRight, Code, Terminal } from "lucide-react"
 
-// Properly typed interfaces
 interface Milestone {
   year: string
   title: string
@@ -18,7 +16,6 @@ interface Milestone {
   codeSnippet: string
 }
 
-// Custom hook with proper typing
 const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
   const elementRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -27,11 +24,12 @@ const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
     const observer = new IntersectionObserver(([entry]) => {
       setIsVisible(entry.isIntersecting)
     }, { threshold: 0.1, ...options })
-
+  
     const element = elementRef.current
     if (element) observer.observe(element)
     return () => { if (element) observer.unobserve(element) }
-  }, [options.rootMargin, options.threshold]) // Only re-run if these change
+  }, [options])
+  
 
   return [elementRef, isVisible] as const
 }
@@ -58,13 +56,12 @@ const useMilestones = () => useMemo(() => [
   }
 ], []);
 
-// TechBadge component - memoized for better performance
 const TechBadge = memo(({ tech, index }: { tech: string, index: number }) => (
   <m.span
     key={tech}
     initial={{ opacity: 0, scale: 0 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ delay: index * 0.05 }} // Reduced delay for faster rendering
+    transition={{ delay: index * 0.05 }}
     className="
       px-4 py-1.5 text-sm rounded-full
       bg-gradient-to-r from-[#00ff9d]/10 to-[#00ffff]/10
@@ -78,7 +75,6 @@ const TechBadge = memo(({ tech, index }: { tech: string, index: number }) => (
   </m.span>
 ));
 
-// Optimized milestone card component
 const MilestoneCard = memo(({ milestone, index }: { 
   milestone: Milestone
   index: number
@@ -89,8 +85,8 @@ const MilestoneCard = memo(({ milestone, index }: {
     <m.div
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -100px 0px" }} // Optimize viewport detection
-      transition={{ duration: 0.3, delay: index * 0.1 }} // Reduced duration
+      viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+      transition={{ duration: 0.3, delay: index * 0.1 }}
     >
       <Card className="
         shadow-[0_0_50px_rgba(0,255,157,0.15)]

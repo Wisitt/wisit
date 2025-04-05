@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef, memo, useMemo } from "react"
-import { LazyMotion, m, domAnimation } from "framer-motion"
+import { LazyMotion, m, domAnimation, AnimatePresence } from "framer-motion"
 import { GithubIcon, LinkedinIcon, TwitterIcon, Terminal, Code2, Braces } from "lucide-react";
 // Import icons individually to reduce bundle size
 
@@ -58,31 +58,58 @@ const socials = [
 // Static characters for scramble effect
 const scrambleText = "!@#$%^&*()_+{}|:<>?~";
 
-// Static grid component to avoid unnecessary re-renders
-const GridBackground = memo(({ cellCount = 50 }: { cellCount?: number }) => (
-  <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] grid-rows-[repeat(auto-fill,minmax(80px,1fr))] opacity-[0.15]">
-    {Array(cellCount).fill(0).map((_, i) => (
-      <div key={i} className="border-[0.5px] border-primary/20" />
-    ))}
-  </div>
-));
+// Enhanced matrix characters
+const matrixChars = Array.from({ length: 96 }, (_, i) => String.fromCharCode(0x30A0 + i));
 
-// Optimized matrix rain that only renders on high-performance devices
-const OptimizedMatrixRain = memo(({ count = 5 }: { count?: number }) => {
+// Static grid component to avoid unnecessary re-renders
+const GridBackground = memo(({ cellCount = 50, animate = false }: { cellCount?: number, animate?: boolean }) => {
+  if (!animate) {
+    return (
+      <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] grid-rows-[repeat(auto-fill,minmax(80px,1fr))] opacity-[0.15]">
+        {Array(cellCount).fill(0).map((_, i) => (
+          <div key={i} className="border-[0.5px] border-primary/20" />
+        ))}
+      </div>
+    );
+  }
+  
+  return (
+    <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
+      {Array(cellCount).fill(0).map((_, i) => (
+        <m.div
+          key={i}
+          className="border-[0.5px] border-[#00ff9d]/20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: i * 0.005 }}
+        />
+      ))}
+    </div>
+  );
+});
+
+// Enhanced matrix rain with more visual appeal
+const EnhancedMatrixRain = memo(({ count = 15 }: { count?: number }) => {
   // Pre-compute the rain elements for better performance
   const rainElements = useMemo(() => 
     Array(count).fill(0).map((_, i) => {
-      const charCount = 5 + Math.floor(Math.random() * 5);
+      const charCount = 5 + Math.floor(Math.random() * 10);
       const xPos = Math.random() * 100;
-      const duration = 5 + Math.random() * 5;
+      const duration = 5 + Math.random() * 10;
+      const size = Math.random() < 0.3 ? 'text-sm' : 'text-xs';
+      const opacity = 0.1 + Math.random() * 0.3;
       
       return (
         <m.div
           key={i}
-          className="absolute text-primary/30 text-xs pointer-events-none"
+          className={`absolute ${size} font-mono pointer-events-none`}
+          style={{ 
+            color: `rgba(0, 255, ${Math.random() < 0.5 ? '157' : '255'}, ${opacity})`,
+            willChange: "transform"
+          }}
           initial={{
             x: `${xPos}vw`,
-            y: -20,
+            y: -100,
           }}
           animate={{
             y: "100vh",
@@ -91,20 +118,59 @@ const OptimizedMatrixRain = memo(({ count = 5 }: { count?: number }) => {
             duration,
             repeat: Infinity,
             ease: "linear",
-            repeatDelay: Math.random() * 5,
+            repeatDelay: Math.random() * 2,
           }}
-          style={{ willChange: "transform" }}
         >
           {Array(charCount).fill(0).map((_, j) => (
-            <div key={j}>
-              {String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96))}
-            </div>
+            <m.div 
+              key={j}
+              animate={{
+                opacity: j === 0 ? [0.7, 1, 0.7] : [0.3, 0.6, 0.3],
+              }}
+              transition={{
+                duration: 1 + Math.random() * 2,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            >
+              {matrixChars[Math.floor(Math.random() * matrixChars.length)]}
+            </m.div>
           ))}
         </m.div>
       );
     }), [count]);
     
-  return <div className="absolute inset-0">{rainElements}</div>;
+  return <div className="absolute inset-0 overflow-hidden">{rainElements}</div>;
+});
+
+// Glitch effect for background elements
+const GlitchElement = memo(({ delay = 0 }: { delay?: number }) => {
+  const size = 10 + Math.random() * 40;
+  const xPos = Math.random() * 100;
+  const yPos = Math.random() * 100;
+  
+  return (
+    <m.div
+      className="absolute rounded-full"
+      style={{
+        width: size,
+        height: size,
+        left: `${xPos}%`,
+        top: `${yPos}%`,
+        background: `radial-gradient(circle, rgba(0,255,${Math.random() < 0.5 ? '157' : '255'},0.3) 0%, transparent 70%)`,
+        filter: 'blur(8px)',
+      }}
+      animate={{
+        opacity: [0, 0.5, 0],
+        scale: [0.8, 1.2, 0.8],
+      }}
+      transition={{
+        duration: 2 + Math.random() * 3,
+        repeat: Infinity,
+        delay: delay,
+      }}
+    />
+  );
 });
 
 // Optimized scramble text effect
@@ -152,12 +218,59 @@ const ScrambleText = memo(() => {
   );
 });
 
+// Animated background layer with pulses and patterns
+const AnimatedBackgroundLayer = memo(() => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Glowing elements in the background */}
+      {Array(8).fill(0).map((_, i) => (
+        <GlitchElement key={i} delay={i * 0.7} />
+      ))}
+      
+      {/* Animated grid lines */}
+      <m.div 
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(0, 255, 157, 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px',
+        }}
+        animate={{
+          backgroundPosition: ['0px 0px', '80px 80px'],
+        }}
+        transition={{
+          duration: 20,
+          ease: 'linear',
+          repeat: Infinity,
+        }}
+      />
+      
+      {/* Pulsing center glow */}
+      <m.div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vh] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(0,255,157,0.1) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+        animate={{
+          opacity: [0.2, 0.5, 0.2],
+          scale: [0.8, 1.2, 0.8],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+    </div>
+  );
+});
 
 // Social icon component
-const SocialIcon = memo(({ social, index }: { 
-  social: typeof socials[0], 
-  index: number 
-}) => (
+const SocialIcon = memo(({ social, index }: { social: typeof socials[0], index: number }) => 
+ (
   <m.a
     key={social.name}
     href={social.url}
@@ -202,11 +315,62 @@ const ActionButton = memo(({
       <Icon className="w-4 h-4" />
       <span>{children}</span>
     </span>
-    <div 
+    <m.div 
       className={`absolute inset-0 bg-[${color}]/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300`}
     />
+    <AnimatePresence>
+      <m.span
+        className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0 }}
+        exit={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+      >
+        <m.div 
+          className="absolute inset-0" 
+          style={{ background: `radial-gradient(circle at center, ${color}20 0%, transparent 70%)` }}
+          animate={{ scale: [0.8, 1.2, 0.8] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      </m.span>
+    </AnimatePresence>
   </m.a>
 ));
+
+// Animated Binary/Hex Code Strip
+const CodeStrip = memo(({ position, delay }: { position: string, delay: number }) => {
+  const chars = "01001010101010010101001010ABCDEF0123456789";
+  const [text, setText] = useState(() => {
+    return Array(20).fill(0).map(() => 
+      chars.charAt(Math.floor(Math.random() * chars.length))
+    ).join("");
+  });
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setText(prev => {
+        const newText = prev.split('');
+        const changeIndex = Math.floor(Math.random() * newText.length);
+        newText[changeIndex] = chars.charAt(Math.floor(Math.random() * chars.length));
+        return newText.join('');
+      });
+    }, 300);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+    <m.div
+      className="absolute text-[0.65rem] font-mono text-[#00ff9d]/30 whitespace-nowrap"
+      style={{ [position]: '5%' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay }}
+    >
+      {text}
+    </m.div>
+  );
+});
 
 function HeroContent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -248,20 +412,31 @@ function HeroContent() {
       ref={containerRef}
       className="relative min-h-screen overflow-hidden bg-[#0a0a0a]"
     >
-
-      {/* Grid background - reduced number of cells */}
-      <GridBackground cellCount={isHighPerformance ? 50 : 25} />
+      {/* Enhanced Grid background with animation */}
+      <GridBackground 
+        cellCount={isHighPerformance ? 100 : 25} 
+        animate={isHighPerformance && !prefersReducedMotion} 
+      />
 
       {/* Animated background - only for high performance devices */}
       {isHighPerformance && !prefersReducedMotion && (
         <div 
-          className="absolute inset-0 relative"
+          className="absolute inset-0"
           style={{ transform: `translateY(${backgroundYValue})` }}
         >
+          {/* Enhanced background animations */}
+          <AnimatedBackgroundLayer />
+          
           <div className="absolute inset-0 bg-gradient-radial from-primary/20 via-background to-background" />
           
-          {/* Code rain effect - reduced count */}
-          <OptimizedMatrixRain count={5} />
+          {/* Enhanced Matrix rain effect */}
+          <EnhancedMatrixRain count={isHighPerformance ? 15 : 5} />
+          
+          {/* Code strips around edges */}
+          <CodeStrip position="top" delay={0.2} />
+          <CodeStrip position="bottom" delay={0.5} />
+          <CodeStrip position="left" delay={0.8} />
+          <CodeStrip position="right" delay={1.1} />
         </div>
       )}
 
@@ -286,6 +461,18 @@ function HeroContent() {
                 transition={{ duration: 0.3, delay: 0.2 }}
               >
                 <Terminal className="w-4 h-4" />
+                <m.span
+                  initial={{ width: 0 }}
+                  animate={{ width: "auto" }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="overflow-hidden whitespace-nowrap"
+                >
+                  <m.span
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1 }}
+                    className="inline-block w-2 h-4 bg-[#00ff9d] ml-1"
+                  />
+                </m.span>
               </m.div>
               
               <m.pre
@@ -316,7 +503,7 @@ function HeroContent() {
             <p className="text-base md:text-lg text-primary/60 font-mono max-w-2xl mx-auto pl-8">
               return (
               <span className="text-[#00ff9d]">
-                "Frontend Developer + Full stack Developer"
+                &quot;Frontend Developer + Full stack Developer&quot;
               </span>
               );
             </p>
@@ -354,11 +541,38 @@ function HeroContent() {
           </div>
         </div>
       </div>
+      
+      {/* Animated foreground elements - only with high performance */}
+      {isHighPerformance && !prefersReducedMotion && (
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Random floating particles */}
+          {Array(5).fill(0).map((_, i) => (
+            <m.div
+              key={`particle-${i}`}
+              className="absolute rounded-full w-1 h-1 bg-[#00ff9d]"
+              style={{
+                left: `${10 + Math.random() * 80}%`,
+                top: `${10 + Math.random() * 80}%`,
+                filter: 'blur(1px)',
+              }}
+              animate={{
+                x: [0, Math.random() * 50 - 25, 0],
+                y: [0, Math.random() * 50 - 25, 0],
+                opacity: [0, 0.6, 0],
+              }}
+              transition={{
+                duration: 5 + Math.random() * 5,
+                repeat: Infinity,
+                delay: i * 0.5,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-// Main component with LazyMotionProvider
 export default function Hero() {
   return (
     <LazyMotion features={domAnimation}>

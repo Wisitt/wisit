@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, PanInfo } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   Terminal,
@@ -400,9 +400,7 @@ export default function Portfolio() {
   const [currentTime, setCurrentTime] = useState("");
   const [currentUser] = useState("Wisitt");
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [carouselWidth, setCarouselWidth] = useState(0);
   const [carouselPosition] = useState(0);
-  const [activeot, setActiveDot] = useState(0);
 
   useEffect(() => {
     const updateTime = () => {
@@ -414,28 +412,6 @@ export default function Portfolio() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const calculateWidth = () => {
-      if (carouselRef.current) {
-        const containerWidth =
-          carouselRef.current.parentElement?.offsetWidth || 0;
-        const totalScrollWidth =
-          carouselRef.current.scrollWidth - containerWidth;
-        setCarouselWidth(Math.max(0, totalScrollWidth));
-      }
-    };
-    calculateWidth();
-    window.addEventListener("resize", calculateWidth);
-    return () => window.removeEventListener("resize", calculateWidth);
-  }, []);
-
-  useEffect(() => {
-    if (carouselRef.current) {
-      const cardWidth = 380;
-      const currentIndex = Math.round(Math.abs(carouselPosition) / cardWidth);
-      setActiveDot(Math.min(currentIndex, projects.length - 1));
-    }
-  }, [carouselPosition]);
 
 
   return (
