@@ -277,3 +277,7 @@ export default function About() {
     </LazyMotion>
   )
 }
+
+TechBadge.displayName = "TechBadge";
+MilestoneCard.displayName = "MilestoneCard";
+CyberpunkGrid.displayName = "CyberpunkGrid";

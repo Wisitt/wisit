@@ -399,8 +399,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 export default function Portfolio() {
   const [currentTime, setCurrentTime] = useState("");
   const [currentUser] = useState("Wisitt");
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [carouselPosition] = useState(0);
 
   useEffect(() => {
     const updateTime = () => {

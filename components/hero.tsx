@@ -55,13 +55,11 @@ const socials = [
   }
 ];
 
-// Static characters for scramble effect
 const scrambleText = "!@#$%^&*()_+{}|:<>?~";
 
 // Enhanced matrix characters
 const matrixChars = Array.from({ length: 96 }, (_, i) => String.fromCharCode(0x30A0 + i));
 
-// Static grid component to avoid unnecessary re-renders
 const GridBackground = memo(({ cellCount = 50, animate = false }: { cellCount?: number, animate?: boolean }) => {
   if (!animate) {
     return (
@@ -580,3 +578,12 @@ export default function Hero() {
     </LazyMotion>
   );
 }
+
+GridBackground.displayName = "GridBackground";
+EnhancedMatrixRain.displayName = "EnhancedMatrixRain";
+GlitchElement.displayName = "GlitchElement";
+ScrambleText.displayName = "ScrambleText";
+AnimatedBackgroundLayer.displayName = "AnimatedBackgroundLayer";
+SocialIcon.displayName = "SocialIcon";
+ActionButton.displayName = "ActionButton";
+CodeStrip.displayName = "CodeStrip";
