@@ -51,20 +51,20 @@ const socialLinks: SocialLink[] = [
     color: "#00ffff",
     description: "Professional network"
   },
-  { 
-    icon: Twitter, 
-    href: "https://twitter.com/Wisitt", 
-    label: "Twitter",
-    color: "#00ff9d",
-    description: "Real-time updates"
-  },
-  { 
-    icon: Facebook, 
-    href: "https://facebook.com/Wisitt", 
-    label: "Facebook",
-    color: "#00ffff",
-    description: "Social interface"
-  },
+  // { 
+  //   icon: Twitter, 
+  //   href: "https://twitter.com/Wisitt", 
+  //   label: "Twitter",
+  //   color: "#00ff9d",
+  //   description: "Real-time updates"
+  // },
+  // { 
+  //   icon: Facebook, 
+  //   href: "https://facebook.com/Wisitt", 
+  //   label: "Facebook",
+  //   color: "#00ffff",
+  //   description: "Social interface"
+  // },
 ]
 
 function FormField({ 
@@ -418,7 +418,7 @@ export default function Contact() {
   };
 
   return (
-    <section className="py-10 md:py-20 relative overflow-hidden bg-[#0a0a0a]">
+    <section className="py-10 md:py-20 relative overflow-hidden bg-[#0a0a0a]" id="contact">
       {/* Animated Grid Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
@@ -605,7 +605,7 @@ export default function Contact() {
             </div>
 
             <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2  gap-4"
             >
               {socialLinks.map((social, index) => (
                 <motion.a

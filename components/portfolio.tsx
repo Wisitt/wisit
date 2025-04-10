@@ -39,11 +39,11 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: "FinTrack",
+    title: "Finsight",
     description:
       "Personal finance tracking system with OCR receipt scanning for expense categorization",
-    image: "/projects/blank.jpg",
-    technologies: ["Next.js", "TypeScript", "Tailwind", "Supabase", "Vercel"],
+    image: "/projects/finance.png",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Supabase", "Vercel","Render","Nest.js","Docker","Google Vision Api"],
     links: {
       github: "https://github.com/Wisitt/finance-scan",
       live: "https://finance-scan.vercel.app/"
@@ -63,6 +63,32 @@ const projects: Project[] = [
         "Financial insights and reports"
       ],
       impact: "Simplified expense tracking by 70%"
+    }
+  },
+  {
+    title: "2D Platformer Game",
+    description: "Developed a 2D side-scrolling platformer game",
+    image: "/projects/jumphell.jpg",
+    technologies: ["Construct", "Firebase"],
+    links: {
+      // github: "https://github.com/Wisitt/platformer-game",
+      live:"https://game-for-fun-by-wisit.web.app/"
+    },
+    status: "STUDY",
+    year: "2019",
+    metrics: {
+      performance: 75,
+      users: "Game dev learning",
+      impact: "Game development skills"
+    },
+    details: {
+      features: [
+        "Side-scrolling mechanics",
+        "Character progression system",
+        "Level design and obstacles",
+        "Score tracking with leaderboard"
+      ],
+      impact: "Introduction to game development fundamentals"
     }
   },
   {
@@ -227,32 +253,6 @@ const projects: Project[] = [
   //     impact: "First complete C# application with database integration"
   //   }
   // },
-  {
-    title: "2D Platformer Game",
-    description: "Developed a 2D side-scrolling platformer game",
-    image: "/projects/jumphell.jpg",
-    technologies: ["Construct", "Firebase"],
-    links: {
-      // github: "https://github.com/Wisitt/platformer-game",
-      live:"https://game-for-fun-by-wisit.web.app/"
-    },
-    status: "STUDY",
-    year: "2019",
-    metrics: {
-      performance: 75,
-      users: "Game dev learning",
-      impact: "Game development skills"
-    },
-    details: {
-      features: [
-        "Side-scrolling mechanics",
-        "Character progression system",
-        "Level design and obstacles",
-        "Score tracking with leaderboard"
-      ],
-      impact: "Introduction to game development fundamentals"
-    }
-  }
 ];
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
@@ -413,7 +413,7 @@ export default function Portfolio() {
 
 
   return (
-    <section className="py-16 bg-[#0a0a0a] overflow-hidden relative">
+    <section className="py-16 bg-[#0a0a0a] overflow-hidden relative" id="projects">
       <motion.div
         className="fixed top-0 left-0 right-0 z-50 bg-black/80 border-b border-[#00ff9d]/10"
         initial={{ y: -100 }}

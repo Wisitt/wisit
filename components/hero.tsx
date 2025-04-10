@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, memo, useMemo } from "react"
 import { LazyMotion, m, domAnimation, AnimatePresence } from "framer-motion"
-import { GithubIcon, LinkedinIcon, TwitterIcon, Terminal, Code2, Braces } from "lucide-react";
+import { GithubIcon, LinkedinIcon, Terminal, Code2, Braces } from "lucide-react";
 // Import icons individually to reduce bundle size
 
 // Performance detection context
@@ -47,12 +47,12 @@ const socials = [
     url: 'https://linkedin.com/in/Wisitt',
     color: '#0077b5'
   },
-  { 
-    name: 'Twitter',
-    icon: TwitterIcon,
-    url: 'https://twitter.com/Wisitt',
-    color: '#1DA1F2'
-  }
+  // { 
+  //   name: 'Twitter',
+  //   icon: TwitterIcon,
+  //   url: 'https://twitter.com/Wisitt',
+  //   color: '#1DA1F2'
+  // }
 ];
 
 const scrambleText = "!@#$%^&*()_+{}|:<>?~";

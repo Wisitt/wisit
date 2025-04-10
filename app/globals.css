@@ -208,6 +208,8 @@
 
 html {
   position: relative;
+  scroll-behavior: smooth;
+
 }
 
 /* Add to your global CSS */

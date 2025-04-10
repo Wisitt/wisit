@@ -25,7 +25,9 @@ import {
   SiBootstrap,
   SiMui,
   SiAntdesign,
-  SiShadcnui
+  SiShadcnui,
+  SiNestjs,
+  SiSupabase
 } from "react-icons/si"
 
 // Types
@@ -267,7 +269,9 @@ const skills: SkillCategoryData[] = [
       { name: "Prisma", icon: SiPrisma, color: "#5a67d8", proficiency: 90, experience: "≈1 year", type: "primary" },
       { name: "AWS", icon: FaAws, color: "#ff9900", proficiency: 65, experience: "≈1 year", type: "secondary" },
       { name: "Railway", icon: SiRailway, color: "#0b0d0e", proficiency: 70, experience: "≈1 year", type: "secondary" },
-      { name: "Render", icon: SiRender, color: "#46e3b7", proficiency: 70, experience: "≈1 year", type: "secondary" }
+      { name: "Render", icon: SiRender, color: "#46e3b7", proficiency: 70, experience: "≈1 year", type: "secondary" },
+      { name: "NestJS", icon: SiNestjs, color: "#ea2845", proficiency: 85, experience: "≈0.5 year", type: "primary" },
+      { name: "Supabase", icon: SiSupabase, color: "#3ecf8e", proficiency: 80, experience: "≈0.5 year", type: "primary" }
     ]
   },
   {
