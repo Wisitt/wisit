@@ -12,6 +12,12 @@ import {
   Clock,
   Shield,
   Zap,
+  FileDown,
+  X,
+  FileBadge,
+  Download,
+  Maximize2,
+  MinusSquare,
 } from "lucide-react";
 
 interface Project {
@@ -203,56 +209,6 @@ const projects: Project[] = [
       impact: "Achieved 85% recommendation accuracy rate"
     }
   },
-  // {
-  //   title: "Book Selling Website",
-  //   description: "Online book store with CRUD functionality using PDO",
-  //   image: "/projects/blank.jpg",
-  //   technologies: ["PHP", "Bootstrap", "MySQL"],
-  //   links: {
-  //     github: "https://github.com/Wisitt/bookstore"
-  //   },
-  //   status: "ARCHIVED",
-  //   year: "2022",
-  //   metrics: {
-  //     performance: 80,
-  //     users: "Educational",
-  //     impact: "Core web dev skills"
-  //   },
-  //   details: {
-  //     features: [
-  //       "Book catalog with search and filter",
-  //       "User authentication system",
-  //       "Shopping cart functionality",
-  //       "Order processing and tracking"
-  //     ],
-  //     impact: "Fundamental learning of database CRUD operations"
-  //   }
-  // },
-  // {
-  //   title: "Book Rental System",
-  //   description: "Library management system for renting and borrowing books",
-  //   image: "/projects/blank.jpg",
-  //   technologies: ["C#", "SQL Server"],
-  //   links: {
-  //     github: "https://github.com/Wisitt/book-rental-system"
-  //   },
-  //   status: "EDUCATIONAL",
-  //   year: "2022",
-  //   metrics: {
-  //     performance: 78,
-  //     users: "College project",
-  //     impact: "Desktop app development"
-  //   },
-  //   details: {
-  //     features: [
-  //       "Book inventory management",
-  //       "Member registration system",
-  //       "Rental tracking and late fees",
-  //       "Reporting and statistics"
-  //     ],
-  //     impact: "First complete C# application with database integration"
-  //   }
-  // },
 ];
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
@@ -260,6 +216,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  // Define a fallback image path
+  const fallbackImage = "/projects/blank.jpg";
 
   return (
     <motion.div
@@ -280,7 +238,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       >
         <motion.div className="relative h-48 mb-4 rounded-lg overflow-hidden group">
           <Image
-            src={project.image}
+            src={project.image || fallbackImage}
             alt={project.title}
             fill
             className="object-cover"
@@ -396,21 +354,186 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
+// Resume Modal Component with Google PDF Viewer
+// Resume Modal Component with Native PDF Viewer
+function ResumeModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [downloadStarted, setDownloadStarted] = useState(false);
+  const [pdfLoaded, setPdfLoaded] = useState(false);
+
+  const resumeFileName = "wisit.pdf";
+  const resumeLocalPath = "/projects/wisit.pdf"; // MUST be inside /public/projects
+
+  const handleDownloadResume = () => {
+    setDownloadStarted(true);
+
+    const link = document.createElement("a");
+    link.href = resumeLocalPath;
+    link.setAttribute("download", resumeFileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+      setDownloadStarted(false);
+    }, 3000);
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  // Handle PDF load state
+  useEffect(() => {
+    if (isOpen) {
+      setPdfLoaded(false);
+      const timer = setTimeout(() => {
+        setPdfLoaded(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+
+          {/* Modal Container - This ensures the modal stays centered */}
+          <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+            {/* Actual Modal */}
+            <motion.div
+              className={`bg-black/90 border border-[#00ff9d]/20 rounded-lg overflow-hidden flex flex-col pointer-events-auto ${
+                isFullscreen
+                  ? "fixed inset-4 md:inset-8"
+                  : "w-[90%] max-w-4xl h-[80vh] max-h-[90vh]"
+                }`}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 20 }}
+            >
+              <div className="flex justify-between items-center p-4 border-b border-[#00ff9d]/20">
+                <div className="flex items-center gap-3">
+                  <FileBadge className="w-5 h-5 text-[#00ff9d]" />
+                  <h3 className="text-[#00ff9d] font-mono font-bold">{resumeFileName}</h3>
+                  <span className="text-[#00ffff]/60 font-mono text-xs">
+                    Last updated: 2025-04-14
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    className="p-2 rounded-lg bg-[#00ffff]/10 border border-[#00ffff]/20 text-[#00ffff]"
+                    onClick={toggleFullscreen}
+                    whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 255, 255, 0.2)" }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {isFullscreen ? (
+                      <MinusSquare className="w-4 h-4" />
+                    ) : (
+                      <Maximize2 className="w-4 h-4" />
+                    )}
+                  </motion.button>
+                  <motion.button
+                    className={`flex items-center gap-1 px-3 py-1 rounded-md border font-mono text-xs transition-colors ${
+                      downloadStarted
+                        ? "bg-[#00ff9d]/20 text-[#00ff9d] border-[#00ff9d]/30"
+                        : "bg-[#00ffff]/10 text-[#00ffff] border-[#00ffff]/20 hover:bg-[#00ffff]/20"
+                    }`}
+                    onClick={handleDownloadResume}
+                    whileHover={!downloadStarted ? { scale: 1.05 } : {}}
+                    whileTap={!downloadStarted ? { scale: 0.95 } : {}}
+                    disabled={downloadStarted}
+                  >
+                    <Download className="w-3 h-3" />
+                    {downloadStarted ? "Downloaded" : "Download"}
+                  </motion.button>
+                  <motion.button
+                    className="p-2 rounded-lg bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[#00ff9d]"
+                    onClick={onClose}
+                    whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 255, 157, 0.2)" }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <X className="w-4 h-4" />
+                  </motion.button>
+                </div>
+              </div>
+
+              <div className="flex-grow bg-[#111] overflow-hidden relative">
+                {/* Loading state */}
+                {!pdfLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+                    <div className="text-[#00ff9d] font-mono text-sm flex flex-col items-center gap-2">
+                      <div className="w-6 h-6 border-2 border-[#00ff9d] border-t-transparent rounded-full animate-spin"></div>
+                      <div>Loading resume...</div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Native PDF preview using <object> */}
+                <object
+                  data={resumeLocalPath}
+                  type="application/pdf"
+                  className="w-full h-full"
+                  onLoad={() => setPdfLoaded(true)}
+                >
+                  <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                    <p className="text-[#00ff9d] font-mono mb-4">
+                      Cannot preview PDF in this browser.
+                    </p>
+                    <motion.a
+                      href={resumeLocalPath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-[#00ff9d]/20 text-[#00ff9d] border border-[#00ff9d]/30 rounded-md font-mono text-sm hover:bg-[#00ff9d]/30 transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Open PDF in new tab
+                    </motion.a>
+                  </div>
+                </object>
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+
 export default function Portfolio() {
-  const [currentTime, setCurrentTime] = useState("");
+  // Use exact time format provided by the user
+  const [currentTime, setCurrentTime] = useState("2025-04-14 15:44:08");
   const [currentUser] = useState("Wisitt");
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setCurrentTime(now.toISOString().slice(0, 19).replace("T", " "));
+      const year = now.getUTCFullYear();
+      const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(now.getUTCDate()).padStart(2, '0');
+      const hours = String(now.getUTCHours()).padStart(2, '0');
+      const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+      
+      setCurrentTime(`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`);
     };
+    
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-
-
 
   return (
     <section className="py-16 bg-[#0a0a0a] overflow-hidden relative" id="projects">
@@ -441,51 +564,50 @@ export default function Portfolio() {
       </motion.div>
 
       <div className="container mx-auto px-4 mt-12">
-  <motion.div
-    className="text-center space-y-6 mb-10"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-  >
-    <div className="inline-block">
-      <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-4">
-        <span className="text-[#00ff9d]">$</span>{" "}
-        <span className="text-[#00ffff]">load</span>{" "}
-        <span className="text-[#00ff9d]">project_matrix</span>{" "}
-        <span className="text-[#00ffff]">--showcase</span>
+        <motion.div
+          className="text-center space-y-6 mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-block">
+            <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-4">
+              <span className="text-[#00ff9d]">$</span>{" "}
+              <span className="text-[#00ffff]">load</span>{" "}
+              <span className="text-[#00ff9d]">project_matrix</span>{" "}
+              <span className="text-[#00ffff]">--showcase</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold font-mono">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
+                Projects.showcase();
+              </span>
+            </h2>
+          </div>
+        </motion.div>
+
+        <Carousel>
+          <CarouselPrevious className="bg-black/50 border border-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/10" />
+          <CarouselContent>
+            {projects.map((project, index) => (
+              <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                <ProjectCard key={project.title} project={project} index={index} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselNext className="bg-black/50 border border-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/10" />
+        </Carousel>
+
+        <motion.div
+          className="flex items-center justify-center gap-2 mt-8 text-[#00ff9d]/60 font-mono"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          <Code2 className="w-4 h-4" />
+          <div className="text-sm">Drag freely to explore projects</div>
+          <ArrowRight className="w-4 h-4" />
+        </motion.div>
       </div>
-      <h2 className="text-4xl md:text-5xl font-bold font-mono">
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
-          Projects.showcase();
-        </span>
-      </h2>
-    </div>
-  </motion.div>
-
-  <Carousel>
-    <CarouselPrevious className="bg-black/50 border border-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/10" />
-    <CarouselContent>
-      {projects.map((project, index) => (
-        <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
-          <ProjectCard key={project.title} project={project} index={index} />
-        </CarouselItem>
-      ))}
-    </CarouselContent>
-    <CarouselNext className="bg-black/50 border border-[#00ff9d]/20 text-[#00ff9d] hover:bg-[#00ff9d]/10" />
-  </Carousel>
-
-  <motion.div
-    className="flex items-center justify-center gap-2 mt-8 text-[#00ff9d]/60 font-mono"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.8 }}
-  >
-    <Code2 className="w-4 h-4" />
-    <div className="text-sm">Drag freely to explore projects</div>
-    <ArrowRight className="w-4 h-4" />
-  </motion.div>
-</div>
-
 
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(5)].map((_, i) => (
@@ -510,6 +632,11 @@ export default function Portfolio() {
         ))}
       </div>
 
+      {/* Resume Modal */}
+      <ResumeModal isOpen={isResumeModalOpen} onClose={() => setIsResumeModalOpen(false)} />
+
+
+      {/* Projects counter at bottom right */}
       <motion.div
         className="fixed bottom-4 right-4 px-4 py-2 bg-black/80 border border-[#00ff9d]/20 rounded-lg font-mono text-xs"
         initial={{ opacity: 0, y: 20 }}
@@ -522,6 +649,25 @@ export default function Portfolio() {
             <span>Projects:</span>
           </div>
           <span className="text-[#00ffff]">{projects.length}</span>
+        </div>
+      </motion.div>
+
+      {/* Resume view button at bottom left */}
+      <motion.div
+        className="fixed bottom-4 left-4 px-4 py-2 bg-black/80 border border-[#00ff9d]/20 rounded-lg font-mono text-xs cursor-pointer hover:bg-[#00ff9d]/10 transition-colors"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2 }}
+        onClick={() => setIsResumeModalOpen(true)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-[#00ff9d]">
+            <FileDown className="w-3 h-3" />
+            <span>Resume</span>
+          </div>
+          <span className="text-[#00ffff]">.pdf</span>
         </div>
       </motion.div>
     </section>
