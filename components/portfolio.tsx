@@ -354,15 +354,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
-// Resume Modal Component with Google PDF Viewer
 // Resume Modal Component with Native PDF Viewer
 function ResumeModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [pdfLoaded, setPdfLoaded] = useState(false);
 
-  const resumeFileName = "wisit.pdf";
-  const resumeLocalPath = "/projects/wisit.pdf"; // MUST be inside /public/projects
+  const resumeFileName = "wisit-moondet.pdf";
+  const resumeLocalPath = "/projects/wisit-moondet.pdf";
 
   const handleDownloadResume = () => {
     setDownloadStarted(true);
