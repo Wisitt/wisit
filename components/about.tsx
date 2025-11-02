@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useMemo, memo, useCallback, useState } from "react";
+import React, { useEffect, useRef, memo, useCallback, useState, useMemo } from "react";
 import { ChevronRight, Code } from "lucide-react";
 
 interface Milestone {
@@ -13,10 +13,12 @@ interface Milestone {
 }
 
 function usePrefersReducedMotion() {
-  const ref = useRef(false);
+  const ref = useRef<boolean>(false);
   useEffect(() => {
     try {
-      ref.current = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      ref.current =
+        !!window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     } catch {
       ref.current = false;
     }
@@ -25,7 +27,7 @@ function usePrefersReducedMotion() {
 }
 
 function useParallaxContainer() {
-  const containerRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const last = useRef({ x: 0, y: 0 });
   const target = useRef({ x: 0, y: 0 });
@@ -128,14 +130,19 @@ const MilestoneCard = memo(function MilestoneCard({
     }
   };
 
-  const measuredMaxHeight = useMemo(() => {
-    if (!contentInnerRef.current) return 0;
-    return contentInnerRef.current.scrollHeight;
-  }, [isExpanded]);
+  // compute measured height directly (avoids unnecessary hook deps)
+  const measuredMaxHeight = contentInnerRef.current ? contentInnerRef.current.scrollHeight : 0;
 
   return (
-    <div ref={cardRef} className="group relative will-change-transform" style={{ animation: `fadeInUp 0.56s ease-out ${index * 0.08}s both` }}>
-      <div className="relative p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md milestone-card rounded-2xl" data-expanded={String(isExpanded)}>
+    <div
+      ref={cardRef}
+      className="group relative will-change-transform"
+      style={{ animation: `fadeInUp 0.56s ease-out ${index * 0.08}s both` }}
+    >
+      <div
+        className="relative p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md milestone-card rounded-2xl"
+        data-expanded={String(isExpanded)}
+      >
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl" />
         </div>
@@ -147,7 +154,8 @@ const MilestoneCard = memo(function MilestoneCard({
                 <span
                   className="inline-block text-xs font-mono px-3 py-1 rounded-full"
                   style={{
-                    background: "linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+                    background:
+                      "linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
                     border: "1px solid rgba(255,255,255,0.06)",
                     color: "rgba(230,238,248,0.9)",
                     letterSpacing: "0.06em",
@@ -157,7 +165,9 @@ const MilestoneCard = memo(function MilestoneCard({
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold font-mono leading-tight mb-2 truncate">{milestone.title}</h3>
+              <h3 className="text-base sm:text-lg font-bold font-mono leading-tight mb-2 truncate">
+                {milestone.title}
+              </h3>
             </div>
 
             <button
@@ -168,13 +178,22 @@ const MilestoneCard = memo(function MilestoneCard({
               className="p-2 border-2 border-white hover:bg-white hover:text-black transition-all duration-200 flex-shrink-0 shadow-sm rounded"
               title={isExpanded ? "Collapse details" : "Expand details"}
             >
-              <ChevronRight className="w-4 h-4 transition-transform duration-300" style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }} />
+              <ChevronRight
+                className="w-4 h-4 transition-transform duration-300"
+                style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
+              />
             </button>
           </div>
 
-          <div id={`${milestone.id}-details`} className="overflow-hidden transition-[max-height,opacity] duration-400 ease-[cubic-bezier(.2,.9,.25,1)]" style={{ maxHeight: isExpanded ? `${measuredMaxHeight + 28}px` : 0, opacity: isExpanded ? 1 : 0 }}>
+          <div
+            id={`${milestone.id}-details`}
+            className="overflow-hidden transition-[max-height,opacity] duration-400 ease-[cubic-bezier(.2,.9,.25,1)]"
+            style={{ maxHeight: isExpanded ? `${measuredMaxHeight + 28}px` : 0, opacity: isExpanded ? 1 : 0 }}
+          >
             <div ref={contentInnerRef} className="space-y-4 pt-4 border-t-2 border-white/12">
-              <p className="text-sm font-mono text-white/80 leading-relaxed">{milestone.description}</p>
+              <p className="text-sm font-mono text-white/80 leading-relaxed">
+                {milestone.description}
+              </p>
 
               <div className="flex flex-wrap gap-2">
                 {milestone.tech.map((technology, i) => (
@@ -232,60 +251,49 @@ export default function CareerSection() {
 
   return (
     <section id="about" className="relative bg-gradient-to-bl from-black via-neutral-900 to-black text-white py-20 overflow-hidden font-mono" aria-label="Experience">
-<style>{`
-  .career-parallax { position: relative; overflow: hidden; }
-  .career-bg-layer { position: absolute; inset: 0; pointer-events: none; will-change: transform, opacity; }
+      <style>{`
+        .career-parallax { position: relative; overflow: hidden; }
+        .career-bg-layer { position: absolute; inset: 0; pointer-events: none; will-change: transform, opacity; }
+        .career-bg-layer.depth-1 {
+          opacity: 0.03;
+          transform: scale(1.02);
+          animation: floatTiny 9s ease-in-out infinite;
+          background-image:
+            radial-gradient(circle at 30% 40%, rgba(255,255,255,0.06) 0%, transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%);
+        }
+        .career-bg-layer.depth-2 {
+          opacity: 0.02;
+          background-image:
+            linear-gradient(to right, rgba(255,255,255,0.22) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.22) 1px, transparent 1px);
+          background-size: 50px 50px;
+          animation: floatSlow 12s ease-in-out infinite;
+          transform: translateZ(0);
+        }
+        @keyframes floatSlow {
+          0% { transform: translateY(0) }
+          50% { transform: translateY(-10px) }
+          100% { transform: translateY(0) }
+        }
+        @keyframes floatTiny {
+          0% { transform: translateY(0) }
+          50% { transform: translateY(-6px) }
+          100% { transform: translateY(0) }
+        }
+        [data-parallax="true"] { --px: 0; --py: 0; }
+        .milestone-card { transition: box-shadow .35s, background-color .35s, border-color .35s; }
+        .milestone-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        @media (max-width: 640px) {
+          .milestones-grid { gap: 12px; }
+          .career-bg-layer.depth-2 { background-size: 36px 36px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .career-bg-layer, .milestone-card { animation: none !important; transition: none !important; transform: none !important; }
+        }
+      `}</style>
 
-  /* tone: soft radial highlights (จากตัวแรก) */
-  .career-bg-layer.depth-1 {
-    opacity: 0.03;
-    transform: scale(1.02);
-    animation: floatTiny 9s ease-in-out infinite;
-    background-image:
-      radial-gradient(circle at 30% 40%, rgba(255,255,255,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%);
-  }
-
-  /* grid detail: ใช้ขนาด 50px (จากตัวที่สอง) แต่ความโปร่งจางแบบตัวแรก */
-  .career-bg-layer.depth-2 {
-    opacity: 0.02;
-    background-image:
-      linear-gradient(to right, rgba(255,255,255,0.22) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.22) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: floatSlow 12s ease-in-out infinite;
-    transform: translateZ(0);
-  }
-
-  @keyframes floatSlow {
-    0% { transform: translateY(0) }
-    50% { transform: translateY(-10px) }
-    100% { transform: translateY(0) }
-  }
-  @keyframes floatTiny {
-    0% { transform: translateY(0) }
-    50% { transform: translateY(-6px) }
-    100% { transform: translateY(0) }
-  }
-
-  [data-parallax="true"] { --px: 0; --py: 0; }
-
-  .milestone-card { transition: box-shadow .35s, background-color .35s, border-color .35s; }
-  /* hover strength ตามตัวที่สอง (slightly stronger) but still smooth */
-  .milestone-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-
-  @media (max-width: 640px) {
-    .milestones-grid { gap: 12px; }
-    .career-bg-layer.depth-2 { background-size: 36px 36px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .career-bg-layer, .milestone-card { animation: none !important; transition: none !important; transform: none !important; }
-  }
-`}</style>
-
-
-      <div className="career-parallax" data-parallax="true" ref={containerRef as any}>
+      <div className="career-parallax" data-parallax="true" ref={containerRef}>
         <div className="career-bg-layer depth-1" aria-hidden style={{ transform: `translate3d(calc(var(--px) * -0.12px), calc(var(--py) * -0.12px), 0) scale(1.03)` }} />
         <div className="career-bg-layer depth-2" aria-hidden style={{ transform: `translate3d(calc(var(--px) * 0.18px), calc(var(--py) * 0.18px), 0)` }} />
 
@@ -311,7 +319,7 @@ export default function CareerSection() {
           <div className="mt-16 pt-10 border-t-2 border-white/12 text-center">
             <p className="text-sm opacity-60 tracking-wider">READY FOR YOUR NEXT PROJECT</p>
             <a href="#contact" className="inline-flex items-center gap-2 mt-6 px-8 py-3 border-2 border-white text-sm font-bold hover:bg-white hover:text-black transition-all duration-200 shadow-lg backdrop-blur-sm bg-white/5 rounded">
-              LET'S WORK TOGETHER
+              LET&apos;S WORK TOGETHER
             </a>
           </div>
         </div>

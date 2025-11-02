@@ -238,7 +238,7 @@ const DATA = {
 };
 
 /* For brevity in this snippet: reuse your original DATA object */
-const DATA_PLACEHOLDER = DATA as any;
+const DATA_PLACEHOLDER = DATA;
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
@@ -444,7 +444,7 @@ export default function ResumePage() {
               <h3 className="text-lg font-semibold text-slate-800">{lang === "en" ? "Projects & Extracurriculars" : "โครงการ / ผลงาน"}</h3>
 
               <div className="mt-3 grid gap-3">
-                {d.projects.map((p: any, i: number) => (
+                {d.projects.map((p, i: number) => (
                   <div key={i} className="p-3 bg-slate-50 border rounded-md">
                     <div className="flex items-start justify-between">
                       <div>
@@ -463,7 +463,7 @@ export default function ResumePage() {
             <section className="bg-white p-6 rounded-lg border shadow-sm">
               <h3 className="text-lg font-semibold text-slate-800">{lang === "en" ? "Education" : "การศึกษา"}</h3>
               <div className="mt-3 space-y-3">
-                {d.education.map((e: any, i: number) => (
+                {d.education.map((e, i: number) => (
                   <div key={i} className="p-3 rounded-md border bg-slate-50">
                     <div className="font-semibold">{e.school}</div>
                     <div className="text-sm text-slate-600">{e.when} · {e.degree}</div>

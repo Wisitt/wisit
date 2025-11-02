@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Github, ExternalLink, Code2, ChevronRight, ChevronLeft } from "lucide-react";
 
 interface Project {
@@ -332,10 +332,8 @@ export default function Portfolio() {
   const next = () => setIndex((s) => (s + 1) % projects.length);
   const prev = () => setIndex((s) => (s - 1 + projects.length) % projects.length);
 
-  const uniqueTechCount = useMemo(() => new Set(projects.flatMap((p) => p.technologies)).size, []);
-
   return (
-        <section id="projects" className="section-seam relative min-h-screen bg-gradient-to-tr from-black via-neutral-900 to-black text-white py-20 overflow-hidden font-mono" data-parallax="true">
+        <section id="work" className="section-seam relative min-h-screen bg-gradient-to-tr from-black via-neutral-900 to-black text-white py-20 overflow-hidden font-mono" data-parallax="true">
 
       <style>{`
         /* decorative subtle background layers (keeps dark tone) */
@@ -414,26 +412,7 @@ export default function Portfolio() {
           </div>
         </div>
 
-        {/* stats */}
-        {/* <div className="mt-10 pt-8 border-t border-white/10 text-center">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto mb-8">
-            <div>
-              <div className="text-3xl sm:text-4xl font-bold">{projects.length}</div>
-              <div className="text-xs opacity-60">PROJECTS</div>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-bold">{projects.filter((p) => p.status === "PRODUCTION").length}</div>
-              <div className="text-xs opacity-60">PRODUCTION</div>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-bold">{uniqueTechCount}</div>
-              <div className="text-xs opacity-60">TECHNOLOGIES</div>
-            </div>
-          </div>
-
-          <p className="text-sm opacity-60 tracking-wider mb-4">INTERESTED IN WORKING TOGETHER?</p>
-          <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-sm font-bold hover:bg-white hover:text-black transition rounded bg-white/5">GET IN TOUCH</a>
-        </div> */}
+     
       </div>
 
       {/* polite SR live region for slide announcements */}

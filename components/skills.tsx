@@ -151,9 +151,11 @@ const ExperienceChip: React.FC<{ text: string; color?: string }> = ({ text, colo
 };
 
 /* ---------- SkillCard ---------- */
+type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+
 const SkillCard: React.FC<{
   name: string;
-  icon: React.ComponentType<any>;
+  icon: IconComponent;
   color?: string;
   experience?: string;
   note?: string;
@@ -210,7 +212,6 @@ const SkillCard: React.FC<{
     return () => observer.disconnect();
   }, []);
 
-  const darkColor = isDarkHex(color);
   const iconColor = color;
 
   return (
@@ -218,8 +219,8 @@ const SkillCard: React.FC<{
       ref={cardRef}
       className="group relative will-change-transform"
       style={{
-        animation: isVisible ? `fadeInUp 0.6s ease-out ${index * 0.08}s both` : 'none',
-        opacity: isVisible ? 1 : 0
+        animation: isVisible ? `fadeInUp 0.6s ease-out ${index * 0.08}s both` : "none",
+        opacity: isVisible ? 1 : 0,
       }}
     >
       <div className="relative p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md skill-card rounded-2xl">
@@ -272,11 +273,19 @@ const SkillCard: React.FC<{
 };
 
 /* ---------- Category data ---------- */
+interface SkillItem {
+  name: string;
+  icon: IconComponent;
+  color?: string;
+  proficiency?: number;
+  experience?: string;
+  note?: string;
+}
 interface SkillCategoryData {
   category: string;
-  icon: React.ComponentType<any>;
+  icon: IconComponent;
   description: string;
-  items: { name: string; icon: React.ComponentType<any>; color?: string; proficiency?: number; experience?: string; note?: string }[];
+  items: SkillItem[];
 }
 
 const skills: SkillCategoryData[] = [
@@ -354,7 +363,7 @@ export default function SkillsSection() {
   return (
     <section
       id="skills"
-      ref={containerRef as any}
+      ref={containerRef}
       className="section-seam relative min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white py-20 overflow-hidden font-mono"
       data-parallax="true"
       aria-label="Skills and technology stack"
@@ -464,7 +473,7 @@ export default function SkillsSection() {
               href="#contact"
               className="inline-flex items-center gap-2 mt-6 px-8 py-4 border-2 border-white text-sm font-bold hover:bg-white hover:text-black transition-all duration-200 shadow-lg backdrop-blur-sm bg-white/5 rounded"
             >
-              LET'S WORK TOGETHER
+              LET&apos;S WORK TOGETHER
             </a>
           </div>
         </div>

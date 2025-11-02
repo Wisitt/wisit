@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Github, Linkedin, Mail, Send, Check, Copy } from "lucide-react";
+import React, { useState, useEffect, useRef, JSX } from "react";
+import { Github, Linkedin, Mail, Send, Check } from "lucide-react";
 
 interface SocialLink {
-  icon: any;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   href: string;
   label: string;
 }
@@ -16,10 +16,13 @@ const socialLinks: SocialLink[] = [
 ];
 
 function usePrefersReducedMotion() {
-  const ref = useRef(false);
+  const ref = useRef<boolean>(false);
   useEffect(() => {
     try {
-      ref.current = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      ref.current =
+        typeof window !== "undefined" &&
+        !!window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     } catch {
       ref.current = false;
     }
@@ -28,7 +31,7 @@ function usePrefersReducedMotion() {
 }
 
 function useParallaxContainer() {
-  const containerRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const last = useRef({ x: 0, y: 0 });
   const target = useRef({ x: 0, y: 0 });
@@ -68,7 +71,7 @@ function useParallaxContainer() {
   return containerRef;
 }
 
-export default function Contact() {
+export default function Contact(): JSX.Element {
   const [isMounted, setIsMounted] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,11 +80,11 @@ export default function Contact() {
   const containerRef = useParallaxContainer();
 
   useEffect(() => {
-    const t = setTimeout(() => setIsMounted(true), 80);
+    const t = window.setTimeout(() => setIsMounted(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const validate = () => {
+  const validate = (): boolean => {
     if (!formData.name || !formData.email || !formData.message) {
       alert("กรุณากรอกชื่อ อีเมล และข้อความให้ครบ");
       return false;
@@ -94,7 +97,7 @@ export default function Contact() {
     return true;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!validate()) return;
 
     setIsSubmitting(true);
@@ -109,7 +112,7 @@ export default function Contact() {
         formData.message,
         "",
         "---",
-        "Sent from: portfolio site"
+        "Sent from: portfolio site",
       ].join("\n");
 
       const mailto = `mailto:wisitmoondet@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -117,19 +120,19 @@ export default function Contact() {
       // Try to open mail client
       window.location.href = mailto;
 
-      // show optimistic success (since navigation to mail client is out-of-band)
+      // optimistic success (navigation to mail client is external)
       setShowSuccess(true);
       setFormData({ name: "", email: "", message: "" });
-      setTimeout(() => setShowSuccess(false), 6000);
-    } catch (err) {
-      console.error("Failed to open mailto:", err);
-      // fallback: copy support email to clipboard
+      window.setTimeout(() => setShowSuccess(false), 6000);
+    } catch (error) {
+      // Log the error and fallback to copying the email to clipboard
+      console.error("Failed to open mailto:", error);
       try {
         await navigator.clipboard.writeText("wisitmoondet@gmail.com");
         setCopied(true);
-        setTimeout(() => setCopied(false), 4000);
+        window.setTimeout(() => setCopied(false), 4000);
         alert("ไม่สามารถเปิดโปรแกรมอีเมลบนเครื่องนี้ — อีเมลถูกคัดลอกลงคลิปบอร์ด: wisitmoondet@gmail.com");
-      } catch (copyErr) {
+      } catch {
         alert("ไม่สามารถส่งอีเมลได้ตอนนี้ — โปรดติดต่อทาง wisitmoondet@gmail.com โดยตรง");
       }
     } finally {
@@ -140,7 +143,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={containerRef as any}
+      ref={containerRef}
       className="section-seam relative min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white py-20 overflow-hidden font-mono"
       data-parallax="true"
       aria-label="Contact"
@@ -211,12 +214,15 @@ export default function Contact() {
               <div className="p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md rounded-2xl">
                 <h3 className="text-sm font-bold mb-4 tracking-wider opacity-60">CONNECT</h3>
                 <div className="space-y-3">
-                  {socialLinks.map((social) => (
-                    <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 p-3 border-2 border-white/20 bg-black/30 hover:bg-white hover:text-black transition-all rounded-md">
-                      <social.icon className="w-5 h-5" />
-                      <span className="text-sm font-bold tracking-wider">{social.label}</span>
-                    </a>
-                  ))}
+                  {socialLinks.map((social) => {
+                    const Icon = social.icon;
+                    return (
+                      <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 p-3 border-2 border-white/20 bg-black/30 hover:bg-white hover:text-black transition-all rounded-md">
+                        <Icon className="w-5 h-5" />
+                        <span className="text-sm font-bold tracking-wider">{social.label}</span>
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
 
