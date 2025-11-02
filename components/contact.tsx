@@ -1,717 +1,253 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import emailjs from 'emailjs-com';
-import { useState, useEffect, useRef } from "react"
-import { motion, useInView, AnimatePresence } from "framer-motion"
-import { 
-  Terminal, 
-  Github, 
-  Linkedin, 
-  Twitter, 
-  Facebook,
-  Clock,
-  User,
-  Mail,
-  MessageSquare,
-  ChevronRight,
-  Shield,
-  Lock,
-  Signal,
-  Zap,
-  Download,
-  CheckCircle2,
-  AlertCircle,
-  Check
-} from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { useState, useEffect, useRef } from "react";
+import { Github, Linkedin, Mail, Send, Check, Copy } from "lucide-react";
 
 interface SocialLink {
-  icon: any
-  href: string
-  label: string
-  color: string
-  description: string
+  icon: any;
+  href: string;
+  label: string;
 }
 
 const socialLinks: SocialLink[] = [
-  { 
-    icon: Github, 
-    href: "https://github.com/Wisitt", 
-    label: "GitHub",
-    color: "#00ff9d",
-    description: "View source protocols"
-  },
-  { 
-    icon: Linkedin, 
-    href: "https://www.linkedin.com/in/wisit-m/", 
-    label: "LinkedIn",
-    color: "#00ffff",
-    description: "Professional network"
-  },
-  // { 
-  //   icon: Twitter, 
-  //   href: "https://twitter.com/Wisitt", 
-  //   label: "Twitter",
-  //   color: "#00ff9d",
-  //   description: "Real-time updates"
-  // },
-  // { 
-  //   icon: Facebook, 
-  //   href: "https://facebook.com/Wisitt", 
-  //   label: "Facebook",
-  //   color: "#00ffff",
-  //   description: "Social interface"
-  // },
-]
+  { icon: Github, href: "https://github.com/Wisitt", label: "GITHUB" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/wisit-m/", label: "LINKEDIN" },
+  { icon: Mail, href: "mailto:wisitmoondet@gmail.com", label: "EMAIL" },
+];
 
-function FormField({ 
-  id, 
-  label, 
-  icon: Icon, 
-  type = "text", 
-  value, 
-  onChange, 
-  placeholder,
-  animate = true
-}: {
-  id: string
-  label: string
-  icon: any
-  type?: string
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  placeholder: string
-  animate?: boolean
-}) {
-  const [isFocused, setIsFocused] = useState(false)
-  const fieldRef = useRef<HTMLDivElement>(null)
-  const [isInView, setIsInView] = useState(false)
+function usePrefersReducedMotion() {
+  const ref = useRef(false);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsInView(entry.isIntersecting)
-        })
-      },
-      {
-        threshold: 0.5, // 50% ขององค์ประกอบต้องเข้าในมุมมองเพื่อให้ trigger
-      }
-    )
-
-    const currentFieldRef = fieldRef.current;
-    if (currentFieldRef) {
-      observer.observe(currentFieldRef);
+    try {
+      ref.current = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch {
+      ref.current = false;
     }
+  }, []);
+  return ref;
+}
 
+function useParallaxContainer() {
+  const containerRef = useRef<HTMLElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const last = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0, y: 0 });
+  const reduced = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (reduced.current) return;
+    const el = containerRef.current;
+    if (!el) return;
+    let ticking = false;
+
+    const handleMouse = (e: MouseEvent) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 100;
+      const ny = (e.clientY / window.innerHeight - 0.5) * 100;
+      target.current.x = nx;
+      target.current.y = ny;
+
+      if (!ticking) {
+        ticking = true;
+        rafRef.current = window.requestAnimationFrame(() => {
+          last.current.x += (target.current.x - last.current.x) * 0.12;
+          last.current.y += (target.current.y - last.current.y) * 0.12;
+          el.style.setProperty("--px", String(last.current.x));
+          el.style.setProperty("--py", String(last.current.y));
+          ticking = false;
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouse, { passive: true });
     return () => {
-      if (currentFieldRef) {
-        observer.unobserve(currentFieldRef);
-      }
-    }
-  }, [])
-  return (
-    <motion.div
-      ref={fieldRef}
-      className="space-y-2 relative"
-    >
-      <label 
-        htmlFor={id} 
-        className="text-[#00ff9d] font-mono flex items-center gap-2"
-      >
-        <Icon className="w-4 h-4" />
-        <span>{label}</span>
-      </label>
-      {type === "textarea" ? (
-        <textarea
-          id={id}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          rows={4}
-          className="w-full bg-black/30 border-2 border-[#00ff9d]/30 p-3 text-[#00ffff] font-mono focus:border-[#00ff9d] outline-none transition-all duration-300 resize-none rounded-lg"
-          placeholder={placeholder}
-          required
-        />
-      ) : (
-        <input
-          type={type}
-          id={id}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          className="w-full bg-black/30 border-2 border-[#00ff9d]/30 p-3 text-[#00ffff] font-mono focus:border-[#00ff9d] outline-none transition-all duration-300 rounded-lg"
-          placeholder={placeholder}
-          required
-        />
-      )}
-      <AnimatePresence>
-        {isFocused && (
-          <motion.div
-            className="absolute inset-0 z-10"
-          >
-            <div className="absolute inset-0 bg-[#00ff9d]/5 blur-xl" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  )
-}
+      window.removeEventListener("mousemove", handleMouse);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [reduced]);
 
-function SecurityIndicator() {
-  return (
-    <motion.div 
-      className="absolute -top-3 left-4 px-3 py-1 bg-black/80 border border-[#00ff9d]/30 rounded-full font-mono text-xs flex items-center gap-2"
-    >
-      <Lock className="w-3 h-3 text-[#00ff9d]" />
-      <span className="text-[#00ff9d]">QUANTUM ENCRYPTED</span>
-    </motion.div>
-  )
-}
-
-function ConnectionStatus() {
-  const [connectionStrength, setConnectionStrength] = useState(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setConnectionStrength(prev => (prev + 1) % 5)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div className="flex items-center gap-2 text-[#00ff9d]/60">
-      <Signal className="w-4 h-4" />
-      <div className="flex gap-1">
-        {[...Array(4)].map((_, i) => (
-          <div
-            key={i}
-            className={`w-1 h-3 rounded-full transition-colors duration-300 ${
-              i <= connectionStrength ? "bg-[#00ff9d]" : "bg-[#00ff9d]/20"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Custom toast component to match the theme
-function CyberToast({ 
-  title, 
-  message, 
-  type = "success" 
-}: { 
-  title: string; 
-  message: string; 
-  type?: "success" | "error"; 
-}) {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className={`fixed top-24 right-4 z-50 w-80 max-w-[90vw] font-mono backdrop-blur-md rounded-lg overflow-hidden
-        ${type === "success" ? "bg-black/80 border-2 border-[#00ff9d]/50" : "bg-black/80 border-2 border-[#ff0055]/50"}`}
-    >
-      <div className={`px-1 py-0.5 ${type === "success" ? "bg-[#00ff9d]/20" : "bg-[#ff0055]/20"} flex items-center justify-between`}>
-        <div className="flex items-center gap-2">
-          {type === "success" ? (
-            <Check className="w-3 h-3 text-[#00ff9d]" />
-          ) : (
-            <AlertCircle className="w-3 h-3 text-[#ff0055]" />
-          )}
-          <span className={`text-xs ${type === "success" ? "text-[#00ff9d]" : "text-[#ff0055]"}`}>
-            {title}
-          </span>
-        </div>
-        <span className={`text-xs ${type === "success" ? "text-[#00ff9d]/60" : "text-[#ff0055]/60"}`}>
-          {new Date().toISOString().substring(11, 19)}
-        </span>
-      </div>
-      
-      <div className="p-3">
-        <p className={`text-sm mb-2 ${type === "success" ? "text-[#00ffff]" : "text-[#ff9999]"}`}>
-          {message}
-        </p>
-        
-        <div className="flex justify-between items-center text-xs">
-          <div className="flex items-center gap-2">
-            <Shield className={`w-3 h-3 ${type === "success" ? "text-[#00ff9d]/60" : "text-[#ff0055]/60"}`} />
-            <span className={type === "success" ? "text-[#00ff9d]/60" : "text-[#ff0055]/60"}>
-              STATUS: {type === "success" ? "CONFIRMED" : "FAILED"}
-            </span>
-          </div>
-          
-          <motion.div 
-            animate={{ 
-              opacity: [0.6, 1, 0.6],
-            }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className={`h-1.5 w-1.5 rounded-full ${type === "success" ? "bg-[#00ff9d]" : "bg-[#ff0055]"}`} 
-          />
-        </div>
-      </div>
-      
-      <motion.div 
-        className="h-1 w-full bg-black/50"
-        initial={{ width: "0%" }}
-        animate={{ width: "100%" }}
-        transition={{ duration: 3 }}
-      >
-        <motion.div 
-          className={`h-full ${type === "success" ? "bg-[#00ff9d]" : "bg-[#ff0055]"}`}
-          initial={{ width: "100%" }}
-          animate={{ width: "0%" }}
-          transition={{ duration: 3 }}
-        />
-      </motion.div>
-    </motion.div>
-  );
+  return containerRef;
 }
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitProgress, setSubmitProgress] = useState(0)
-  const [currentTime, setCurrentTime] = useState("2025-03-19 16:01:23")
-  const [currentUser] = useState("Wisitt")
-  const [showCustomToast, setShowCustomToast] = useState(false)
-  const [toastData, setToastData] = useState({
-    title: "",
-    message: "",
-    type: "success" as "success" | "error"
-  })
-  const { toast } = useToast()
-  const formRef = useRef<HTMLFormElement>(null)
-  const isInView = useInView(formRef, { once: false })
+  const [isMounted, setIsMounted] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const containerRef = useParallaxContainer();
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      
-      // Format in Thai timezone (UTC+7)
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: 'Asia/Bangkok',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      };
-      
-      // Format using Intl API to get Thai timezone
-      const formatter = new Intl.DateTimeFormat('en-US', options);
-      const parts = formatter.formatToParts(now);
-      
-      // Build the formatted date string in YYYY-MM-DD HH:MM:SS format
-      const formattedDate = {
-        year: '', month: '', day: '', 
-        hour: '', minute: '', second: ''
-      };
-      
-      parts.forEach(part => {
-        if (part.type === 'year' || part.type === 'month' || part.type === 'day' || 
-            part.type === 'hour' || part.type === 'minute' || part.type === 'second') {
-          formattedDate[part.type] = part.value;
-        }
-      });
-      
-      // Create the Thai time in the required format
-      const thaiTimeString = 
-        `${formattedDate.year}-${formattedDate.month}-${formattedDate.day} ` +
-        `${formattedDate.hour}:${formattedDate.minute}:${formattedDate.second}`;
-      
-      setCurrentTime(thaiTimeString);
+    const t = setTimeout(() => setIsMounted(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  const validate = () => {
+    if (!formData.name || !formData.email || !formData.message) {
+      alert("กรุณากรอกชื่อ อีเมล และข้อความให้ครบ");
+      return false;
     }
-    
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, [])
+    const simpleEmailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!simpleEmailRe.test(formData.email)) {
+      alert("กรุณากรอกอีเมลให้ถูกต้อง");
+      return false;
+    }
+    return true;
+  };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.id]: e.target.value,
-    }))
-  }
+  const handleSubmit = async () => {
+    if (!validate()) return;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
     setIsSubmitting(true);
-    setSubmitProgress(0);
-  
-    const progressInterval = setInterval(() => {
-      setSubmitProgress(prev => Math.min(prev + 10, 100));
-    }, 200);
-  
+
     try {
-      // Use EmailJS to send the email
-      const response = await emailjs.send(
-        'service_fj0x6s6', // Replace with your EmailJS service ID
-        'template_rpd1olo', // Replace with your EmailJS template ID
-        {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-        },
-        'XfMuvnU5hwjG4UnrT' // Replace with your EmailJS user ID
-      );
-  
-      if (response.status === 200) {
-        // Display custom themed toast
-        setToastData({
-          title: "[ TRANSMISSION SUCCESSFUL ]",
-          message: "Quantum encryption secured. Message delivered to neural network. Awaiting response...",
-          type: "success"
-        });
-        setShowCustomToast(true);
-        setTimeout(() => setShowCustomToast(false), 4000);
-        
-        // Still use the built-in toast for accessibility
-        toast({
-          title: "[ SUCCESS ] Message transmitted",
-          description: "Quantum encryption secured. Awaiting response...",
-        });
-      } else {
-        throw new Error('Failed to send email');
-      }
-  
+      const subject = `Contact from ${formData.name}`;
+      const body = [
+        `Name: ${formData.name}`,
+        `Email: ${formData.email}`,
+        "",
+        "Message:",
+        formData.message,
+        "",
+        "---",
+        "Sent from: portfolio site"
+      ].join("\n");
+
+      const mailto = `mailto:wisitmoondet@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      // Try to open mail client
+      window.location.href = mailto;
+
+      // show optimistic success (since navigation to mail client is out-of-band)
+      setShowSuccess(true);
       setFormData({ name: "", email: "", message: "" });
-    } catch (error) {
-      // Display custom themed toast for error
-      setToastData({
-        title: "[ TRANSMISSION ERROR ]",
-        message: "Neural network connection interrupted. Security protocols engaged. Retry sequence initiated.",
-        type: "error"
-      });
-      setShowCustomToast(true);
-      setTimeout(() => setShowCustomToast(false), 4000);
-      
-      // Still use the built-in toast for accessibility
-      toast({
-        title: "[ ERROR ] Transmission failed",
-        description: "Neural network connection interrupted. Retry sequence initiated.",
-        variant: "destructive",
-      });
+      setTimeout(() => setShowSuccess(false), 6000);
+    } catch (err) {
+      console.error("Failed to open mailto:", err);
+      // fallback: copy support email to clipboard
+      try {
+        await navigator.clipboard.writeText("wisitmoondet@gmail.com");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 4000);
+        alert("ไม่สามารถเปิดโปรแกรมอีเมลบนเครื่องนี้ — อีเมลถูกคัดลอกลงคลิปบอร์ด: wisitmoondet@gmail.com");
+      } catch (copyErr) {
+        alert("ไม่สามารถส่งอีเมลได้ตอนนี้ — โปรดติดต่อทาง wisitmoondet@gmail.com โดยตรง");
+      }
     } finally {
-      clearInterval(progressInterval);
-      setSubmitProgress(100);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setSubmitProgress(0);
-      }, 500);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="py-10 md:py-20 relative overflow-hidden bg-[#0a0a0a]" id="contact">
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] opacity-[0.15]">
-          {[...Array(200)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="border-[0.5px] border-[#00ff9d]/20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.005 }}
-            />
-          ))}
-        </div>
-      </div>
+    <section
+      id="contact"
+      ref={containerRef as any}
+      className="section-seam relative min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black text-white py-20 overflow-hidden font-mono"
+      data-parallax="true"
+      aria-label="Contact"
+    >
+      <style>{`
+        .section-seam { position: relative; z-index: 0; }
+        .section-seam::before { content: ""; position: absolute; left: 0; right: 0; top: -12rem; height: 12rem; pointer-events: none; z-index: 60; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.28) 30%, rgba(17,24,39,0.85) 80%, rgba(17,24,39,1) 100%); backdrop-filter: blur(4px); transform: translate3d(calc(var(--px) * -0.03px), calc(var(--py) * -0.02px), 0); }
+        .career-parallax { position: relative; overflow: hidden; }
+        .career-bg-layer { position: absolute; inset: 0; pointer-events: none; will-change: transform, opacity; }
+        .career-bg-layer.depth-1 { opacity: 0.03; transform: scale(1.02); animation: floatTiny 9s ease-in-out infinite; background-image: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.06) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%); }
+        .career-bg-layer.depth-2 { opacity: 0.02; background-image: linear-gradient(to right, rgba(255,255,255,0.22) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.22) 1px, transparent 1px); background-size: 48px 48px; animation: floatSlow 12s ease-in-out infinite; transform: translateZ(0); }
+        @keyframes floatSlow { 0% { transform: translateY(0) } 50% { transform: translateY(-10px) } 100% { transform: translateY(0) } }
+        @keyframes floatTiny { 0% { transform: translateY(0) } 50% { transform: translateY(-6px) } 100% { transform: translateY(0) } }
+      `}</style>
 
-      {/* Status Bar */}
-      <motion.div 
-        className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-[#00ff9d]/10"
-      >
-        <div className="container mx-auto px-2 sm:px-4 py-2">
-          <div className="flex justify-between items-center font-mono text-xs">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-              <div className="flex items-center gap-2">
-                <Terminal className="w-3 h-3 text-[#00ff9d]" />
-                <span className="text-[#00ff9d]">system.status: ONLINE</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <User className="w-3 h-3 text-[#00ffff]" />
-                <span className="text-[#00ffff]">user: {currentUser}</span>
-              </div>
-              <ConnectionStatus  />
-            </div>
-            <div className="flex items-center gap-2 mt-2 sm:mt-0">
-              <Clock className="w-3 h-3 text-[#00ff9d]" />
-              <span className="text-[#00ff9d]">{currentTime} UTC</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      <div className="career-parallax" data-parallax="true">
+        <div className="career-bg-layer depth-1" aria-hidden style={{ transform: `translate3d(calc(var(--px) * -0.12px), calc(var(--py) * -0.12px), 0) scale(1.03)` }} />
+        <div className="career-bg-layer depth-2" aria-hidden style={{ transform: `translate3d(calc(var(--px) * 0.18px), calc(var(--py) * 0.18px), 0)` }} />
 
-      {/* Custom Toast Notification */}
-      <AnimatePresence>
-        {showCustomToast && (
-          <CyberToast 
-            title={toastData.title} 
-            message={toastData.message} 
-            type={toastData.type} 
-          />
-        )}
-      </AnimatePresence>
-
-      <div className="container mx-auto px-2 sm:px-4">
-        <motion.div
-          className="max-w-4xl mx-auto"
-        >
-          {/* Terminal Header */}
-          <div className="text-center space-y-4 md:space-y-6 mb-8 md:mb-12">
-            <div className="inline-block">
-              <div className="px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm mb-2 md:mb-4">
-                <span className="text-[#00ff9d]">$</span>{" "}
-                <span className="text-[#00ffff]">initialize</span>{" "}
-                <span className="text-[#00ff9d]">quantum_transmission</span>{" "}
-                <span className="text-[#00ffff]">--secure</span>
-              </div>
-              
-              <h2 className="text-4xl md:text-6xl font-bold font-mono">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00ff9d] via-[#00ffff] to-[#00ff9d]">
-                  Connect.establish();
-                </span>
-              </h2>
-              
-              <motion.div 
-                className="flex items-center justify-center gap-4 mt-2 md:mt-4"
-              >
-                <div className="px-3 py-1 bg-[#00ff9d]/10 rounded-full border border-[#00ff9d]/20">
-                  <div className="flex items-center gap-2 text-[#00ff9d] font-mono text-sm">
-                    <Shield className="w-4 h-4" />
-                    <span>SECURE CHANNEL ACTIVE</span>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+        <div className="container mx-auto px-8 sm:px-12 lg:px-16 relative max-w-6xl">
+          <div className={`text-center mb-16 sm:mb-20 transition-all duration-700 ease-out ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <div className="inline-flex items-center gap-2 opacity-60 mb-6 text-xs tracking-wider"><Mail className="w-4 h-4" /><span>GET IN TOUCH</span></div>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight drop-shadow-lg">CONTACT</h1>
           </div>
 
-          {/* Contact Form */}
-          <motion.form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className="relative space-y-6 md:space-y-8 bg-black/50 backdrop-blur-sm border border-[#00ff9d]/10 p-4 md:p-8 rounded-lg z-10"
-          >
-            <SecurityIndicator />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-              <FormField
-                id="name"
-                label="Full Name"
-                icon={User}
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-              />
-              <FormField
-                id="email"
-                label="Email Address"
-                icon={Mail}
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="example@mail.com"
-              />
-            </div>
-
-            <FormField
-              id="message"
-              label="Your Message"
-              icon={MessageSquare}
-              type="textarea"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="How can I assist you?"
-            />
-
-            <motion.button
-              type="submit"
-              disabled={isSubmitting}
-              className="relative w-full bg-[#00ff9d]/10 border border-[#00ff9d]/50 text-[#00ff9d] font-mono py-3 rounded-lg hover:bg-[#00ff9d]/20 transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden"
-              whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(0,255,157,0.2)" }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {isSubmitting && (
-                <motion.div
-                  className="absolute inset-0 bg-[#00ff9d]/20"
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${submitProgress}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-              <div className="relative flex items-center gap-2">
-                {isSubmitting ? (
-                  <>
-                    <Download className="w-5 h-5 animate-pulse" />
-                    <span>Sending... {submitProgress}%</span>
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-5 h-5" />
-                    <span>Send Message</span>
-                  </>
-                )}
-                <ChevronRight className="w-4 h-4" />
-              </div>
-            </motion.button>
-
-            {/* Form Status */}
-            <div className="pt-4 border-t border-[#00ff9d]/10">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center font-mono text-xs gap-2">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-[#00ff9d]/60">
-                    <Shield className="w-3 h-3" />
-                    <span>ENCRYPTION: ACTIVE</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className={`transition-all duration-700 delay-200 ease-out ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+              <div className="p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md rounded-2xl">
+                <div className="space-y-6">
+                  <div>
+                    <label htmlFor="name" className="block text-xs mb-2 tracking-wider opacity-60">NAME</label>
+                    <input id="name" type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="YOUR NAME" className="w-full bg-black/50 border-2 border-white/30 px-4 py-3 text-white font-mono focus:outline-none focus:border-white transition-all rounded-md" />
                   </div>
-                  <div className="flex items-center gap-2 text-[#00ffff]/60">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>CHANNEL: SECURE</span>
+
+                  <div>
+                    <label htmlFor="email" className="block text-xs mb-2 tracking-wider opacity-60">EMAIL</label>
+                    <input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="YOUR@EMAIL.COM" className="w-full bg-black/50 border-2 border-white/30 px-4 py-3 text-white font-mono focus:outline-none focus:border-white transition-all rounded-md" />
                   </div>
-                </div>
-                <span className="text-[#00ff9d]/40">
-                  {`[${currentTime}]`}
-                </span>
-              </div>
-            </div>
-          </motion.form>
 
-          {/* Social Links */}
-          <div className="mt-8 md:mt-12 space-y-6 md:space-y-8">
-            <div className="text-center">
-              <motion.div
-                className="inline-block px-4 py-2 bg-black/50 border border-[#00ff9d]/20 rounded-lg font-mono text-sm"
-              >
-                <span className="text-[#00ff9d]">$</span>{" "}
-                <span className="text-[#00ffff]">load</span>{" "}
-                <span className="text-[#00ff9d]">network_protocols</span>
-              </motion.div>
-            </div>
+                  <div>
+                    <label htmlFor="message" className="block text-xs mb-2 tracking-wider opacity-60">MESSAGE</label>
+                    <textarea id="message" rows={6} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} placeholder="TELL ME ABOUT YOUR PROJECT" className="w-full bg-black/50 border-2 border-white/30 px-4 py-3 text-white font-mono focus:outline-none focus:border-white transition-all rounded-md resize-none" />
+                  </div>
 
-            <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2  gap-4"
-            >
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative p-4 bg-black/30 backdrop-blur-sm border border-[#00ff9d]/10 rounded-lg hover:border-[#00ff9d]/30 transition-colors duration-300"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="flex flex-col items-center gap-3 relative z-10">
-                    <motion.div
-                      className="relative"
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.8 }}
-                    >
-                      <social.icon 
-                        className="w-8 h-8" 
-                        style={{ color: social.color }}
-                      />
-                      <motion.div
-                        className="absolute inset-0 rounded-full blur-xl z-10"
-                        animate={{
-                          backgroundColor: social.color,
-                          opacity: [0.2, 0.4, 0.2],
-                          scale: [1, 1.2, 1],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          delay: index * 0.2,
-                        }}
-                      />
-                    </motion.div>
-                    <div className="space-y-1 text-center">
-                      <h3 className="text-[#00ffff] font-mono text-sm">
-                        {social.label}
-                      </h3>
-                      <p className="text-[#00ff9d]/60 font-mono text-xs">
-                        {social.description}
-                      </p>
+                  <button onClick={handleSubmit} disabled={isSubmitting} className="w-full bg-white text-black py-4 font-bold tracking-wider hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 rounded-md">
+                    <span>{isSubmitting ? "SENDING..." : "SEND MESSAGE"}</span>
+                    <Send className="w-4 h-4" />
+                  </button>
+
+                  {showSuccess && (
+                    <div className="p-4 border-2 border-white/20 bg-white/5 flex items-start gap-3 rounded">
+                      <Check className="w-5 h-5 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-bold mb-1">MESSAGE ACTIONED</p>
+                        <p className="text-xs opacity-60">Your email client should open — if not, wisitmoondet@gmail.com has been copied to clipboard.</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Hover Effect */}
-                  <motion.div
-                    className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{
-                      background: `radial-gradient(circle at center, ${social.color}10 0%, transparent 70%)`
-                    }}
-                  />
-                </motion.a>
-              ))}
-            </motion.div>
+                  {copied && (
+                    <div className="p-3 border-2 border-white/12 bg-white/4 rounded text-xs">Email copied to clipboard: wisitmoondet@gmail.com</div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className={`space-y-6 transition-all duration-700 delay-300 ease-out ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+              <div className="p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md rounded-2xl">
+                <h3 className="text-sm font-bold mb-4 tracking-wider opacity-60">CONNECT</h3>
+                <div className="space-y-3">
+                  {socialLinks.map((social) => (
+                    <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 p-3 border-2 border-white/20 bg-black/30 hover:bg-white hover:text-black transition-all rounded-md">
+                      <social.icon className="w-5 h-5" />
+                      <span className="text-sm font-bold tracking-wider">{social.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md space-y-6 rounded-2xl">
+                <div>
+                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">AVAILABILITY</h3>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-white/20 bg-white/5 rounded-full">
+                    <span className="w-2 h-2 bg-white animate-pulse rounded-full" />
+                    <span className="text-xs tracking-wider">AVAILABLE FOR WORK</span>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t-2 border-white/20">
+                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">LOCATION</h3>
+                  <p className="text-sm font-mono text-white/80 leading-relaxed">BANGKOK, THAILAND<br />WORKING WORLDWIDE</p>
+                </div>
+
+                <div className="pt-6 border-t-2 border-white/20">
+                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">RESPONSE TIME</h3>
+                  <p className="text-sm font-mono text-white/80 leading-relaxed">24-48 HOURS<br />DURING BUSINESS DAYS</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Terminal Footer */}
-          <motion.div
-            className="mt-8 md:mt-12 text-center font-mono space-y-2"
-          >
-            <div className="text-[#00ff9d]/60 space-y-1">
-              <p>// Connection status: optimal</p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs">
-                <span>Encryption: enabled</span>
-                <span>Protocol: quantum_secure_v2.5</span>
-              </div>
-            </div>
-            <div className="text-[#00ffff]/40 text-xs">
-              <span className="mr-2">@{currentUser}</span>
-              <span>{currentTime} UTC</span>
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Data Stream Effect */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-[#00ff9d]/10 text-xs font-mono"
-            initial={{
-              top: -20,
-              left: `${Math.random() * 100}%`,
-              opacity: 0
-            }}
-            animate={{
-              top: "100%",
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear",
-              delay: i * 0.5
-            }}
-          >
-            {[...Array(Math.floor(Math.random() * 20) + 10)].map((_, j) => (
-              <div key={j}>
-                {String.fromCharCode(0x30A0 + Math.random() * 96)}
-              </div>
-            ))}
-          </motion.div>
-        ))}
+          <div className={`mt-20 pt-12 border-t-2 border-white/12 text-center transition-all duration-700 delay-400 ease-out ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <p className="text-xs opacity-60 tracking-widest mb-4">© {new Date().getFullYear()} WISITT — ALL RIGHTS RESERVED</p>
+            <p className="text-xs opacity-40 tracking-wider">BUILT WITH NEXT.JS, TYPESCRIPT & TAILWIND CSS</p>
+          </div>
+        </div>
       </div>
     </section>
-  )
+  );
 }

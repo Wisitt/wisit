@@ -1,228 +1,69 @@
+/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 240 10% 3.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --radius: 0.5rem;
-  }
-
-  .light {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-  }
+/* Root tokens */
+:root{
+  --bg: #07090c;
+  --fg: #e6eef6;
+  --muted: #98a0af;
 }
 
-@layer base {
-  .border-border {
-    border: 1px solid #000; /* ตัวอย่างการกำหนดขอบ */
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Basic reset */
+html,body,#root { height:100%; }
+body {
+  margin:0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  background: radial-gradient(ellipse at top left,#0b1220 0%, #000 60%);
+  color: var(--fg);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-.glassmorphism {
-  @apply bg-opacity-20 backdrop-filter backdrop-blur-lg;
-}
+/* Container helper used in components */
+.container{ max-width: 1200px; margin-left:auto; margin-right:auto; padding-left:1rem; padding-right:1rem; }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+/* small utility to keep content above parallax layers */
+.z-content { position: relative; z-index: 10; }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+/* background helper used on main */
+.bg-background { background: linear-gradient(180deg,#000,#0b0f16 40%, #050608 100%); }
+.text-foreground { color: var(--fg); }
 
 @layer utilities {
-  .animate-gradient {
-    background-size: 200%;
-    animation: gradient 8s linear infinite;
-  }
+  .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(6px); }
+  .text-muted { color: var(--muted); }
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* performance helpers - keep animations cheap */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
 
-.floating-element {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  filter: blur(40px);
-  animation: float 10s infinite;
-  opacity: 0.3;
+/* optional small tweaks for hero typography */
+h1 { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+
+/* small CTA hover */
+a.cta { transition: all .18s ease; }
+a.cta:hover { transform: translateY(-2px); }
+
+
+.milestone-card {
+  transition: box-shadow .35s, background-color .35s, border-color .35s, transform .35s;
+  border-color: rgba(255,255,255,0.7);
+  background-color: rgba(0,0,0,0.40);
 }
-
-@keyframes float {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-20px) scale(1.1);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-  }
+.milestone-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  border-color: rgba(255,255,255,0.4);
 }
-
-.animate-pulse-slow {
-  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.milestone-year-chip {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(230,238,248,0.9);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, \"Roboto Mono\", \"Courier New\", monospace;
+  letter-spacing: 0.06em;
 }
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Button hover effects */
-.group:hover .absolute {
-  transform: translateX(0);
-}
-
-.bg-grid-pattern {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(var(--primary), 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(var(--primary), 0.1) 1px, transparent 1px);
-}
-/* Cyberpunk Scrollbar Styles */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #00ff9d #0a0a0a;
-}
-
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-*::-webkit-scrollbar-track {
-  background: #0a0a0a;
-  border: 1px solid rgba(0, 255, 157, 0.1);
-  border-radius: 4px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #00ff9d, #00ffff);
-  border-radius: 4px;
-  border: 1px solid rgba(0, 255, 157, 0.2);
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #00ffff, #00ff9d);
-  box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
-}
-
-*::-webkit-scrollbar-corner {
-  background: #0a0a0a;
-}
-
-
-@layer utilities {
-  .cyberpunk-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #00ff9d #0a0a0a;
-  }
-
-  .cyberpunk-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .cyberpunk-scrollbar::-webkit-scrollbar-track {
-    background: #0a0a0a;
-    border: 1px solid rgba(0, 255, 157, 0.1);
-    border-radius: 4px;
-  }
-
-  .cyberpunk-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #00ff9d, #00ffff);
-    border-radius: 4px;
-    border: 1px solid rgba(0, 255, 157, 0.2);
-  }
-
-  .cyberpunk-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to bottom, #00ffff, #00ff9d);
-    box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
-  }
-
-  .cyberpunk-scrollbar::-webkit-scrollbar-corner {
-    background: #0a0a0a;
-  }
-    
-  /* Hide default scrollbar for WebKit browsers */
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  } 
-}
-
-html {
-  position: relative;
-  scroll-behavior: smooth;
-
-}
-
-/* Add to your global CSS */
-.cursor-smooth {
-  will-change: transform;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  touch-action: none;
-}
-
-.panel-blur {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
 
