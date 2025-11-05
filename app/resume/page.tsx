@@ -472,7 +472,7 @@ export default function ResumePage() {
                 <ul className="space-y-2 text-sm text-neutral-700">
                   <li>Thai — Native</li>
                   <li>English — Intermediate</li>
-                  <li>Japanese — Beginner</li>
+                  <li>Chinese — Beginner</li>
                 </ul>
               </section>
             </aside>
