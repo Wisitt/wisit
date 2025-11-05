@@ -1,7 +1,7 @@
 // ./app/resume/page.tsx
 "use client";
 
-import React, { JSX, useState } from "react";
+import React, { useState } from "react";
 import {
   FaGithub,
   FaLinkedin,
@@ -301,7 +301,7 @@ const DATA: Record<LangKey, DataLang> = {
 
 
 /* ---- Resume component ---- */
-export default function ResumePage(): JSX.Element {
+export default function ResumePage(): React.ReactElement {
   const [lang, setLang] = useState<LangKey>("en");
   const d = DATA[lang];
 

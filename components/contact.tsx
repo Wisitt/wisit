@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, JSX } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Github, Linkedin, Mail, Send, Check } from "lucide-react";
 
 interface SocialLink {
@@ -71,7 +71,7 @@ function useParallaxContainer() {
   return containerRef;
 }
 
-export default function Contact(): JSX.Element {
+export default function Contact(): React.ReactElement  {
   const [isMounted, setIsMounted] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
