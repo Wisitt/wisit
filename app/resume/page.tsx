@@ -1,6 +1,7 @@
 // ./app/resume/page.tsx
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 import {
   FaGithub,
@@ -115,7 +116,7 @@ const DATA: Record<LangKey, DataLang> = {
       when: "May 2025 — Present · Bangkok (Hybrid)",
       location: "Bangkok (Hybrid)",
       bullets: [
-        "Designed and shipped robust backend APIs and services (Node.js, Express, Drizzle ORM) with observability and error-handling best practices.",
+        "Design and ship robust backend APIs and services (Node.js, Express, Drizzle ORM) with observability and production-grade error handling.",
         "Integrated secure third-party platforms (PAM, NDID, IFA/MF) and implemented centralized token proxy, automatic refresh and resilient retry logic.",
         "Implemented Okta JWT authentication and role-based access for admin and agent APIs.",
         "Built dashboard/reporting services (commission & tax reports, team summaries) and resolved intermittent 5xx issues by centralizing token handling, validation, and logging.",
@@ -332,16 +333,19 @@ export default function ResumePage() {
 
       <main className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-50 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1100px] mx-auto">
-          {/* Back Button */}
-          <div className="mb-6 no-print">
-            <button
-              onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white shadow-sm hover:shadow-md transition-all border border-neutral-200 text-neutral-700 hover:text-neutral-900 font-medium"
+          <div className="fixed top-4 left-4 z-50">
+        <button
+              className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-white shadow-sm hover:shadow-md transition-all border border-neutral-200 text-neutral-700 hover:text-neutral-900 font-medium"
             >
-              <FaArrowLeft className="text-sm" />
-              <span>{lang === "en" ? "Back" : "กลับ"}</span>
+              <Link
+          href="/"
+          aria-label={lang === "en" ? "Back to home" : "กลับไปหน้าหลัก"}
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-white/6 border border-white/10 hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/20"
+        >
+          <FaArrowLeft /> <span className="hidden sm:inline">{lang === "en" ? "Back" : "หน้าหลัก"}</span>
+        </Link>
             </button>
-          </div>
+      </div>
 
           {/* Header */}
           <header className="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-white rounded-2xl shadow-2xl p-8 sm:p-10 mb-8 print-break-inside-avoid">
@@ -482,7 +486,7 @@ export default function ResumePage() {
               <section className="bg-white rounded-xl shadow-md p-6 sm:p-8 border border-neutral-200">
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-neutral-900">
                   <FaBriefcase className="text-xl text-neutral-900" />
-                  <h2 className="text-xl font-bold text-neutral-900 uppercase tracking-wide">{lang === "en" ? "Experience" : "ประสบการณ์"}</h2>
+                  <h2 className="text-xl font-bold text-neutral-900 uppercase tracking-wide">{lang === "en" ? "Experiences" : "ประสบการณ์"}</h2>
                 </div>
 
                 <article className="mb-8 pb-8 border-b border-neutral-200 last:border-0 print-break-inside-avoid">

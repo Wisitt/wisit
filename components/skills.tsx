@@ -129,8 +129,8 @@ function isDarkHex(hex: string) {
 /* ---------- Skill chip ---------- */
 const ExperienceChip: React.FC<{ text: string; color?: string }> = ({ text, color = "#9CA3AF" }) => {
   const dark = isDarkHex(color);
-  const chipBg = dark ? "rgba(255,255,255,0.03)" : hexToRgba(color, 0.08);
-  const chipBorder = dark ? "rgba(255,255,255,0.06)" : hexToRgba(color, 0.16);
+  const chipBg =  hexToRgba(color, 0.09);
+  const chipBorder = hexToRgba(color, 0.5);
   const chipText = dark ? "rgba(230,238,248,0.9)" : color;
 
   return (
@@ -141,7 +141,7 @@ const ExperienceChip: React.FC<{ text: string; color?: string }> = ({ text, colo
         color: chipText,
         letterSpacing: "0.08em",
         transition: "opacity .25s",
-        opacity: 0.78,
+        opacity: 0.95,
       }}
       className="inline-block px-3 py-1 text-xs font-mono rounded-full"
     >
