@@ -1,28 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import million from 'million/compiler';
+// next.config.ts
+import type { NextConfig } from "next";
+import type { Configuration } from "webpack";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   experimental: {
     nextScriptWorkers: true,
   },
-  webpack: (config: any) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
+  webpack: (config: Configuration) => {
+    // ป้องกันกรณี config.resolve อาจจะ undefined
+    config.resolve = config.resolve || {};
+    // fallback เป็น property ที่ webpack types อาจไม่ชัดเจน - cast ชั่วคราว
+    const resolveAny = config.resolve as any;
+    resolveAny.fallback = {
+      ...(resolveAny.fallback || {}),
       fs: false,
     };
     return config;
   },
-}
+};
 
-const millionConfig = {
-  auto: {
-    rsc: true,
-    threshold: 0.05,
-  },
-  mute: true,
-}
-
-module.exports = million.next(nextConfig, millionConfig);
+export default nextConfig;

@@ -301,7 +301,7 @@ const DATA: Record<LangKey, DataLang> = {
 
 
 /* ---- Resume component ---- */
-export default function ResumePage(): React.ReactElement {
+export default function ResumePage() {
   const [lang, setLang] = useState<LangKey>("en");
   const d = DATA[lang];
 
