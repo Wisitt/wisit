@@ -1,7 +1,7 @@
+// ./app/resume/page.tsx
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { JSX, useState } from "react";
 import {
   FaGithub,
   FaLinkedin,
@@ -12,10 +12,73 @@ import {
   FaDownload,
   FaCopy,
   FaArrowLeft,
+  FaBriefcase,
+  FaGraduationCap,
+  FaCode,
 } from "react-icons/fa";
 
-/* (DATA and Tag component unchanged — copy from your original file) */
-const DATA = {
+/* ---- Types ---- */
+type LangKey = "en" | "th";
+
+interface Contact {
+  email: string;
+  phone: string;
+  website: string;
+  github: string;
+  linkedin: string;
+  location: string;
+}
+
+interface ExperienceBlock {
+  title: string;
+  company?: string;
+  when?: string;
+  location?: string;
+  bullets: string[];
+}
+
+interface Project {
+  title: string;
+  when: string;
+  stack: string;
+  desc: string;
+  link?: string;
+}
+
+interface Education {
+  school: string;
+  when: string;
+  degree: string;
+  gpa?: string;
+}
+
+interface DataLang {
+  fullName: string;
+  headline: string;
+  sub: string;
+  contact: Contact;
+  linkedinSummary: string;
+  professionalSummary: string;
+  highlights: string[];
+  technical: {
+    frontend: string;
+    backend: string;
+    db: string;
+    cloud: string;
+    testing: string;
+    tools: string;
+    langs: string;
+  };
+  nilecon: ExperienceBlock;
+  uniga_internship: ExperienceBlock;
+  uniga_full: ExperienceBlock;
+  projects: Project[];
+  education: Education[];
+  footerNote: string;
+}
+
+/* ---- Data ---- */
+const DATA: Record<LangKey, DataLang> = {
   en: {
     fullName: "WISIT MOONDET",
     headline: "Full-stack Developer",
@@ -28,10 +91,6 @@ const DATA = {
       linkedin: "linkedin.com/in/wisit-m",
       location: "Bangkok, Thailand",
     },
-    // timeline: [
-    //   { when: "Mar 2023 – Oct 2023", role: "Frontend Developer (Internship)" },
-    //   { when: "Nov 2023 – Apr 2024", role: "Frontend Developer" },
-    // ],
     linkedinSummary:
       "Full-stack developer with a frontend background, building scalable web platforms using React/Next.js and Node.js. Experienced with secure third-party integrations (PAM, NDID, IFA MF), AWS S3 file workflows, and type-safe validation (Zod). Strong collaborator focused on reliability and clear documentation.",
     professionalSummary:
@@ -54,6 +113,7 @@ const DATA = {
     nilecon: {
       title: "Full-stack Developer — Nilecon (Thailand) Co., Ltd.",
       when: "May 2025 — Present · Bangkok (Hybrid)",
+      location: "Bangkok (Hybrid)",
       bullets: [
         "Designed and shipped robust backend APIs and services (Node.js, Express, Drizzle ORM) with observability and error-handling best practices.",
         "Integrated secure third-party platforms (PAM, NDID, IFA/MF) and implemented centralized token proxy, automatic refresh and resilient retry logic.",
@@ -67,6 +127,7 @@ const DATA = {
     uniga_internship: {
       title: "Frontend Developer (Internship) — Uniga Infotech – Health Benefit Systems",
       when: "Mar 2023 – Oct 2023",
+      location: "Nonthaburi",
       bullets: [
         "Assisted in building Angular-based web applications using RxJS for routing, state handling, and API connectivity.",
         "Participated actively in daily stand-ups, sprint retrospectives, and cross-functional collaboration.",
@@ -76,6 +137,7 @@ const DATA = {
     uniga_full: {
       title: "Frontend Developer — Uniga Infotech – Health Benefit Systems",
       when: "Nov 2023 – Apr 2024",
+      location: "Nonthaburi",
       bullets: [
         "Developed a comprehensive web application using Angular with modular routing, dynamic forms, and lazy loading.",
         "Implemented NgRx for state management, integrated RESTful APIs, conducted code reviews, and authored Cypress E2E tests.",
@@ -134,7 +196,6 @@ const DATA = {
     ],
     footerNote: "Available for interviews and technical screenings. References upon request.",
   },
-
   th: {
     fullName: "WISIT MOONDET",
     headline: "นักพัฒนา Frontend → Full-stack",
@@ -147,10 +208,6 @@ const DATA = {
       linkedin: "linkedin.com/in/wisit-m",
       location: "กรุงเทพฯ, ประเทศไทย",
     },
-    timeline: [
-      { when: "มี.ค. 2023 – ต.ค. 2023", role: "Frontend Developer (ฝึกงาน)" },
-      { when: "พ.ย. 2023 – เม.ย. 2024", role: "Frontend Developer" },
-    ],
     linkedinSummary:
       "นักพัฒนาระดับ Full-stack ที่มีพื้นฐาน frontend แข็งแรง พัฒนา platform ด้วย React/Next.js และ Node.js เชี่ยวชาญการเชื่อมต่อระบบภายนอกอย่างปลอดภัย (PAM, NDID, IFA MF) และ workflow ไฟล์บน AWS S3 พร้อม Zod validation",
     professionalSummary:
@@ -173,6 +230,7 @@ const DATA = {
     nilecon: {
       title: "Full-stack Developer — Nilecon (Thailand) Co., Ltd.",
       when: "พ.ค. 2025 — ปัจจุบัน · กรุงเทพ (Hybrid)",
+      location: "กรุงเทพฯ (Hybrid)",
       bullets: [
         "ออกแบบบริการ backend (Node.js, Express, Drizzle ORM) พร้อม logging และแนวทางการจัดการข้อผิดพลาด",
         "เชื่อมต่อ PAM, NDID, IFA/MF; ใช้ token proxy, refresh อัตโนมัติ และ retry logic เพื่อความเสถียร",
@@ -184,8 +242,9 @@ const DATA = {
       ],
     },
     uniga_internship: {
-      title: "Frontend Developer (ฝึกงาน) — Uniga Infotech – Health Benefit Systems",
+      title: "นักพัฒนา Frontend (ฝึกงาน) — Uniga Infotech – Health Benefit Systems",
       when: "มี.ค. 2023 – ต.ค. 2023",
+      location: "นนทบุรี",
       bullets: [
         "ช่วยพัฒนาเว็บแอปด้วย Angular โดยใช้ RxJS สำหรับ routing, การจัดการ state และการเชื่อมต่อ API",
         "เข้าร่วมประชุม daily stand-ups, sprint retrospectives และทำงานข้ามทีมอย่างสม่ำเสมอ",
@@ -193,7 +252,7 @@ const DATA = {
       ],
     },
     uniga_full: {
-      title: "Frontend Developer — Uniga Infotech – Health Benefit Systems",
+      title: "นักพัฒนา Frontend — Uniga Infotech – Health Benefit Systems",
       when: "พ.ย. 2023 – เม.ย. 2024",
       bullets: [
         "พัฒนาเว็บแอปขนาดใหญ่ด้วย Angular (modular routing, dynamic forms, lazy loading)",
@@ -206,58 +265,52 @@ const DATA = {
         title: "FinTrack",
         when: "มี.ค. 2025",
         stack: "Next.js · NestJS · Tailwind · Prisma · Supabase · Google Vision API",
-        desc: "ระบบ OCR ใบเสร็จและแดชบอร์ดวิเคราะห์; เปิดใช้งานบน Vercel/Render",
+        desc: "ระบบติดตามค่าใช้จ่ายพร้อม OCR และ dashboard วิเคราะห์",
       },
       {
         title: "Salmon Reservation System",
         when: "ธ.ค. 2024",
         stack: "Next.js · Prisma · Tailwind · Render",
-        desc: "ระบบจองพร้อมแผงผู้ดูแล และ availability แบบเรียลไทม์",
+        desc: "ระบบจองพร้อมแผงผู้ดูแลและการตรวจสอบความพร้อมแบบเรียลไทม์",
       },
       {
         title: "UniRoom",
         when: "ธ.ค. 2023 – ก.พ. 2024",
-        stack: "React (TS) · Vite · Tailwind · Docker",
-        desc: "ระบบจองห้องเรียนพร้อมการแจ้งเตือนและตรวจจับการจองซ้ำ",
+        stack: "React (TypeScript) · Vite · Tailwind · Docker",
+        desc: "ระบบจองห้องเรียนพร้อมตรวจจับความขัดแย้งและการแจ้งเตือน",
       },
     ],
     education: [
       {
-        school: "Rajamangala University of Technology Phra Nakhon",
-        when: "Jul 2020 – Feb 2024",
-        degree: "ป.ตรี วิทยาการคอมพิวเตอร์ — GPA 3.54",
+        school: "มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร",
+        when: "2020 – 2024",
+        degree: "วิทยาศาสตรบัณฑิต วิทยาการคอมพิวเตอร์",
+        gpa: "3.54",
       },
       {
-        school: "Nakhonsawan Vocational College",
-        when: "May 2017 – Feb 2020",
-        degree: "ประกาศนียบัตรวิชาชีพ — Business Computer — GPA 3.33",
+        school: "วิทยาลัยอาชีวศึกษานครสวรรค์",
+        when: "2017 – 2020",
+        degree: "ประกาศนียบัตรวิชาชีพ คอมพิวเตอร์ธุรกิจ",
+        gpa: "3.33",
       },
     ],
-    footerNote: "พร้อมเข้ารับการสัมภาษณ์และทดสอบทางเทคนิค",
+    footerNote:
+      "พร้อมเข้ารับการสัมภาษณ์และทดสอบทางเทคนิค · สามารถขอ reference ได้",
   },
 };
 
-/* For brevity in this snippet: reuse your original DATA object */
-const DATA_PLACEHOLDER = DATA;
 
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-block text-xs font-medium px-2 py-1 border rounded-md bg-white text-slate-800">
-      {children}
-    </span>
-  );
-}
+/* ---- Resume component ---- */
+export default function ResumePage(): JSX.Element {
+  const [lang, setLang] = useState<LangKey>("en");
+  const d = DATA[lang];
 
-export default function ResumePage() {
-  const [lang, setLang] = useState<"en" | "th">("en");
-  const d = DATA_PLACEHOLDER[lang];
-
-  function copyLinkedInSummary() {
+  function copyLinkedInSummary(): void {
     const text = d.linkedinSummary;
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard
         .writeText(text)
-        .then(() => alert(lang === "en" ? "LinkedIn summary copied" : "คัดลอกสรุป LinkedIn สำเร็จ"))
+        .then(() => alert(lang === "en" ? "LinkedIn summary copied!" : "คัดลอกสรุป LinkedIn สำเร็จ"))
         .catch(() => alert(lang === "en" ? "Copy failed" : "คัดลอกไม่สำเร็จ"));
     } else {
       alert(lang === "en" ? "Clipboard not available" : "ไม่สามารถเข้าถึงคลิปบอร์ด");
@@ -265,241 +318,288 @@ export default function ResumePage() {
   }
 
   return (
-    <main className="min-h-screen bg-white py-10 px-6 text-slate-900">
-      <div className="max-w-6xl mx-auto">
-         <div className="fixed top-4 left-4 z-50">
-        <Link
-          href="/"
-          aria-label={lang === "en" ? "Back to home" : "กลับไปหน้าหลัก"}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-white/6 border border-white/10 hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/20"
-        >
-          <FaArrowLeft /> <span className="hidden sm:inline">{lang === "en" ? "Back" : "หน้าหลัก"}</span>
-        </Link>
-      </div>
-        {/* Header */}
-        <header className="flex flex-col md:flex-row items-start gap-4 bg-white rounded-lg shadow p-6 border">
-          <div className="flex items-center gap-4">
-            <div className="w-24 h-24 rounded-full border flex items-center justify-center text-2xl font-bold text-slate-900 bg-white">
-              WM
-            </div>
+    <>
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: -0.011em; }
+        @media print {
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; }
+          main { background: white !important; padding: 0 !important; margin: 0 !important; }
+          .no-print { display: none !important; }
+          .print-break-inside-avoid { break-inside: avoid; }
+        }
+      `}</style>
 
-            <div className="min-w-0">
-              <h1 className="text-2xl md:text-3xl font-semibold leading-tight mt-3">{d.fullName}</h1>
-              <div className="text-sm text-slate-700 mt-1">
-                {d.headline} <span className="text-xs text-slate-500">· {d.sub}</span>
-              </div>
-
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Tag>{lang === "en" ? "Hybrid / Remote" : "Hybrid / Remote"}</Tag>
-                <Tag>{d.contact.location || (lang === "en" ? "Bangkok, Thailand" : "กรุงเทพฯ")}</Tag>
-              </div>
-            </div>
+      <main className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1100px] mx-auto">
+          {/* Back Button */}
+          <div className="mb-6 no-print">
+            <button
+              onClick={() => window.history.back()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white shadow-sm hover:shadow-md transition-all border border-neutral-200 text-neutral-700 hover:text-neutral-900 font-medium"
+            >
+              <FaArrowLeft className="text-sm" />
+              <span>{lang === "en" ? "Back" : "กลับ"}</span>
+            </button>
           </div>
 
-          {/* Right-side controls: added Back button here */}
-          <div className="ml-auto flex flex-col items-end gap-3">
-            <div className="flex gap-2">
-              <a className="flex items-center gap-2 text-sm text-slate-700 px-3 py-2 rounded hover:bg-slate-50" href={`mailto:${d.contact.email}`}>
-                <FaEnvelope /> {d.contact.email}
-              </a>
-              <a className="flex items-center gap-2 text-sm text-slate-700 px-3 py-2 rounded hover:bg-slate-50" href={`tel:${d.contact.phone}`}>
-                <FaPhone /> {d.contact.phone}
-              </a>
-            </div>
+          {/* Header */}
+          <header className="bg-gradient-to-br from-neutral-900 via-neutral-800 to-black text-white rounded-2xl shadow-2xl p-8 sm:p-10 mb-8 print-break-inside-avoid">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-white to-neutral-200 flex items-center justify-center text-neutral-900 text-xl font-bold shadow-lg">
+                    {d.fullName.split(" ").map((n) => n[0]).join("")}
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm">
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-medium tracking-wide uppercase">Open to work</span>
+                  </div>
+                </div>
 
-            <div className="flex gap-3 text-xs text-slate-600">
-              <a className="flex items-center gap-2" href={`https://${d.contact.website}`} target="_blank" rel="noreferrer"><FaGlobe /> {d.contact.website}</a>
-              <a className="flex items-center gap-2" href={`https://${d.contact.github}`} target="_blank" rel="noreferrer"><FaGithub /> {d.contact.github}</a>
-              <a className="flex items-center gap-2" href={`https://${d.contact.linkedin}`} target="_blank" rel="noreferrer"><FaLinkedin /> {d.contact.linkedin}</a>
-            </div>
+                <h1 className="text-4xl sm:text-5xl font-bold mb-2 tracking-tight">{d.fullName}</h1>
+                <p className="text-xl sm:text-2xl text-neutral-300 font-medium mb-3">{d.headline}</p>
+                <p className="text-sm text-neutral-400 max-w-2xl leading-relaxed">{d.sub}</p>
 
-            <div className="flex items-center gap-2 mt-2">
-              <button onClick={() => setLang(lang === "en" ? "th" : "en")} className="px-3 py-1 text-xs border rounded bg-white hover:bg-slate-50">
-                {lang === "en" ? "ไทย" : "EN"}
-              </button>
-
-              <button onClick={() => window.print()} className="px-3 py-1 text-xs rounded bg-slate-800 text-white flex items-center gap-2">
-                <FaDownload /> {lang === "en" ? "Print / Save PDF" : "พิมพ์ / บันทึก PDF"}
-              </button>
-
-              <button onClick={copyLinkedInSummary} className="px-3 py-1 text-xs rounded border bg-white hover:bg-slate-50 flex items-center gap-2">
-                <FaCopy /> {lang === "en" ? "Copy LinkedIn summary" : "คัดลอกสรุป LinkedIn"}
-              </button>
-
-            </div>
-          </div>
-        </header>
-
-        {/* Main body (unchanged) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
-          {/* Left */}
-          <aside className="lg:col-span-4 space-y-6">
-            {/* Professional summary, technical, skills, languages */}
-            <section className="bg-white p-5 rounded-lg border shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-800">{lang === "en" ? "Professional summary" : "สรุปประวัติการทำงาน"}</h3>
-              <p className="text-sm text-slate-700 mt-2 leading-relaxed">{d.professionalSummary}</p>
-
-              <h4 className="text-xs font-semibold text-slate-600 mt-4">{lang === "en" ? "Highlights" : "ผลงานเด่น"}</h4>
-              <ul className="list-disc list-inside text-sm text-slate-700 mt-2 space-y-1">
-                {d.highlights.map((h: string, i: number) => <li key={i}>{h}</li>)}
-              </ul>
-            </section>
-
-            <section className="bg-white p-5 rounded-lg border shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-800">{lang === "en" ? "Technical expertise" : "ความเชี่ยวชาญทางเทคนิค"}</h3>
-              <div className="mt-3 text-sm text-slate-700 space-y-2">
-                <div><span className="font-medium text-xs text-slate-600">Frontend: </span> {d.technical.frontend}</div>
-                <div><span className="font-medium text-xs text-slate-600">Backend: </span> {d.technical.backend}</div>
-                <div><span className="font-medium text-xs text-slate-600">Databases: </span> {d.technical.db}</div>
-                <div><span className="font-medium text-xs text-slate-600">Cloud & DevOps: </span> {d.technical.cloud}</div>
-                <div><span className="font-medium text-xs text-slate-600">Testing / Tools: </span> {d.technical.testing} · {d.technical.tools}</div>
-                <div><span className="font-medium text-xs text-slate-600">Languages: </span> {d.technical.langs}</div>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <span className="px-3 py-1.5 bg-white/10 rounded-lg text-xs font-medium border border-white/10">💼 Hybrid / Remote</span>
+                  <span className="px-3 py-1.5 bg-white/10 rounded-lg text-xs font-medium border border-white/10">📍 {d.contact.location}</span>
+                </div>
               </div>
-            </section>
 
-            <section className="bg-white p-5 rounded-lg border shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-800">{lang === "en" ? "Skills & Tools" : "ทักษะ / เครื่องมือ"}</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {[
-                  "TypeScript",
-                  "React",
-                  "Next.js",
-                  "Angular",
-                  "Node.js",
-                  "Prisma",
-                  "Drizzle ORM",
-                  "AWS S3",
-                  "Docker",
-                  "Cypress",
-                  "Okta",
-                  "Figma",
-                ].map((tag) => <Tag key={tag}>{tag}</Tag>)}
+              {/* Contact & Actions */}
+              <div className="flex flex-col gap-3 lg:items-end">
+                <div className="flex flex-col gap-2">
+                  <a href={`mailto:${d.contact.email}`} className="flex items-center gap-2.5 text-sm text-white/90 hover:text-white transition-colors group">
+                    <FaEnvelope className="text-neutral-400 group-hover:text-white transition-colors" />
+                    <span className="font-medium">{d.contact.email}</span>
+                  </a>
+                  <a href={`tel:${d.contact.phone}`} className="flex items-center gap-2.5 text-sm text-white/90 hover:text-white transition-colors group">
+                    <FaPhone className="text-neutral-400 group-hover:text-white transition-colors" />
+                    <span className="font-medium">{d.contact.phone}</span>
+                  </a>
+                </div>
+
+                <div className="flex gap-2">
+                  <a href={`https://${d.contact.website}`} target="_blank" rel="noreferrer" className="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors border border-white/10">
+                    <FaGlobe className="text-base" />
+                  </a>
+                  <a href={`https://${d.contact.github}`} target="_blank" rel="noreferrer" className="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors border border-white/10">
+                    <FaGithub className="text-base" />
+                  </a>
+                  <a href={`https://${d.contact.linkedin}`} target="_blank" rel="noreferrer" className="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors border border-white/10">
+                    <FaLinkedin className="text-base" />
+                  </a>
+                </div>
+
+                <div className="flex flex-wrap gap-2 no-print mt-2">
+                  <button
+                    onClick={() => setLang(lang === "en" ? "th" : "en")}
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-white/10 hover:bg-white/20 transition-colors border border-white/20"
+                  >
+                    {lang === "en" ? "🇹🇭 ไทย" : "🇬🇧 EN"}
+                  </button>
+
+                  <button
+                    onClick={() => window.print()}
+                    className="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-neutral-900 hover:bg-neutral-100 transition-colors flex items-center gap-2 shadow-lg"
+                  >
+                    <FaDownload />
+                    {lang === "en" ? "Save PDF" : "บันทึก PDF"}
+                  </button>
+
+                  <button
+                    onClick={copyLinkedInSummary}
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center gap-2 border border-white/20"
+                  >
+                    <FaCopy />
+                    <span className="hidden sm:inline">{lang === "en" ? "Copy Summary" : "คัดลอก"}</span>
+                  </button>
+                </div>
               </div>
-            </section>
+            </div>
+          </header>
 
-            <section className="bg-white p-5 rounded-lg border shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-800">{lang === "en" ? "Languages" : "ภาษา"}</h3>
-              <ul className="mt-3 text-sm text-slate-700 space-y-1">
-                <li>Thai — Native</li>
-                <li>English — Intermediate</li>
-                <li>Japanese — Beginner</li>
-              </ul>
-            </section>
-          </aside>
+          {/* The rest of the layout uses the same structure you provided and will render using typed data (d.*) */}
+          {/* Projects, Experience and Education sections map using typed arrays (no any). */}
 
-          {/* Right */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Experience cards */}
-            <section className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-800">{lang === "en" ? "Professional Experience" : "ประสบการณ์การทำงาน"}</h3>
+          {/* Experience / Projects / Education / Footer */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left */}
+            <aside className="lg:col-span-4 space-y-6">
+              <section className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 print-break-inside-avoid">
+                <h2 className="text-base font-bold text-neutral-900 mb-4 pb-3 border-b-2 border-neutral-900 uppercase tracking-wide">{lang === "en" ? "About" : "เกี่ยวกับ"}</h2>
+                <p className="text-sm text-neutral-700 leading-relaxed mb-4">{d.professionalSummary}</p>
 
-              {/* Nilecon */}
-              <article className="mt-4 border-l-2 border-slate-100 pl-4">
-                <div className="flex items-start justify-between">
+                <h3 className="text-sm font-semibold text-neutral-800 mb-3 mt-5">{lang === "en" ? "Key Highlights" : "ผลงานเด่น"}</h3>
+                <ul className="space-y-2.5">
+                  {d.highlights.map((h, i) => (
+                    <li key={i} className="text-sm text-neutral-700 pl-4 relative before:content-['▸'] before:absolute before:left-0 before:text-neutral-900 before:font-bold">
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 print-break-inside-avoid">
+                <h2 className="text-base font-bold text-neutral-900 mb-4 pb-3 border-b-2 border-neutral-900 uppercase tracking-wide">{lang === "en" ? "Technical Skills" : "ทักษะทางเทคนิค"}</h2>
+                <div className="space-y-4 text-sm">
                   <div>
-                    <div className="text-sm text-slate-600">{d.nilecon.when}</div>
-                    <h4 className="font-semibold text-slate-800 mt-1">{d.nilecon.title}</h4>
+                    <span className="font-semibold text-neutral-900 block mb-1.5">Frontend</span>
+                    <p className="text-neutral-600 leading-relaxed">{d.technical.frontend}</p>
                   </div>
-                  <div className="text-sm text-slate-500">{lang === "en" ? "Bangkok" : "กรุงเทพฯ"}</div>
+                  <div>
+                    <span className="font-semibold text-neutral-900 block mb-1.5">Backend</span>
+                    <p className="text-neutral-600 leading-relaxed">{d.technical.backend}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-neutral-900 block mb-1.5">Databases</span>
+                    <p className="text-neutral-600 leading-relaxed">{d.technical.db}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-neutral-900 block mb-1.5">Cloud & DevOps</span>
+                    <p className="text-neutral-600 leading-relaxed">{d.technical.cloud}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-neutral-900 block mb-1.5">Testing & Tools</span>
+                    <p className="text-neutral-600 leading-relaxed">{d.technical.testing} · {d.technical.tools}</p>
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 print-break-inside-avoid">
+                <h2 className="text-base font-bold text-neutral-900 mb-4 pb-3 border-b-2 border-neutral-900 uppercase tracking-wide">{lang === "en" ? "Languages" : "ภาษา"}</h2>
+                <ul className="space-y-2 text-sm text-neutral-700">
+                  <li>Thai — Native</li>
+                  <li>English — Intermediate</li>
+                  <li>Japanese — Beginner</li>
+                </ul>
+              </section>
+            </aside>
+
+            {/* Right content */}
+            <div className="lg:col-span-8 space-y-6">
+              <section className="bg-white rounded-xl shadow-md p-6 sm:p-8 border border-neutral-200">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-neutral-900">
+                  <FaBriefcase className="text-xl text-neutral-900" />
+                  <h2 className="text-xl font-bold text-neutral-900 uppercase tracking-wide">{lang === "en" ? "Experience" : "ประสบการณ์"}</h2>
                 </div>
 
-                <ul className="mt-3 list-disc list-inside text-slate-700 space-y-2">
-                  {d.nilecon.bullets.map((b: string, i: number) => <li key={i}>{b}</li>)}
-                </ul>
-              </article>
-
-              {/* Uniga Internship */}
-              <article className="mt-6 border-l-2 border-slate-100 pl-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="text-sm text-slate-600">{d.uniga_internship.when}</div>
-                    <h4 className="font-semibold text-slate-800 mt-1">{d.uniga_internship.title}</h4>
-                  </div>
-                  <div className="text-sm text-slate-500">{lang === "en" ? "Nonthaburi" : "นนทบุรี"}</div>
-                </div>
-
-                <ul className="mt-3 list-disc list-inside text-slate-700 space-y-2">
-                  {d.uniga_internship.bullets.map((b: string, i: number) => <li key={i}>{b}</li>)}
-                </ul>
-              </article>
-
-              {/* Uniga Full */}
-              <article className="mt-6 border-l-2 border-slate-100 pl-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="text-sm text-slate-600">{d.uniga_full.when}</div>
-                    <h4 className="font-semibold text-slate-800 mt-1">{d.uniga_full.title}</h4>
-                  </div>
-                  <div className="text-sm text-slate-500">{lang === "en" ? "Nonthaburi" : "นนทบุรี"}</div>
-                </div>
-
-                <ul className="mt-3 list-disc list-inside text-slate-700 space-y-2">
-                  {d.uniga_full.bullets.map((b: string, i: number) => <li key={i}>{b}</li>)}
-                </ul>
-              </article>
-            </section>
-
-            {/* Projects */}
-            <section className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-800">{lang === "en" ? "Projects & Extracurriculars" : "โครงการ / ผลงาน"}</h3>
-
-              <div className="mt-3 grid gap-3">
-                {d.projects.map((p, i: number) => (
-                  <div key={i} className="p-3 bg-slate-50 border rounded-md">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="font-semibold">{p.title}</div>
-                        <div className="text-xs text-slate-600">{p.when} · <span className="italic">{p.stack}</span></div>
-                      </div>
-                      <div className="text-xs text-slate-500">Role: Developer</div>
+                <article className="mb-8 pb-8 border-b border-neutral-200 last:border-0 print-break-inside-avoid">
+                  <div className="flex justify-between items-start mb-3 gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-neutral-900 mb-1">{d.nilecon.title}</h3>
+                      {d.nilecon.company ? <p className="text-base text-neutral-600 font-medium mb-2">{d.nilecon.company}</p> : null}
                     </div>
-                    <p className="mt-2 text-sm text-slate-700">{p.desc}</p>
+                    <div className="text-right text-sm flex-shrink-0">
+                      <p className="text-neutral-600 font-medium mb-1">{d.nilecon.when}</p>
+                      <p className="text-neutral-500 flex items-center gap-1.5 justify-end"><FaMapMarkerAlt className="text-xs" />{d.nilecon.location}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </section>
+                  <ul className="space-y-2">
+                    {d.nilecon.bullets.map((b, i) => (
+                      <li key={i} className="text-sm text-neutral-700 pl-5 relative before:content-['•'] before:absolute before:left-0 before:text-neutral-900 before:font-bold before:text-lg leading-relaxed">{b}</li>
+                    ))}
+                  </ul>
+                </article>
 
-            {/* Education */}
-            <section className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-800">{lang === "en" ? "Education" : "การศึกษา"}</h3>
-              <div className="mt-3 space-y-3">
-                {d.education.map((e, i: number) => (
-                  <div key={i} className="p-3 rounded-md border bg-slate-50">
-                    <div className="font-semibold">{e.school}</div>
-                    <div className="text-sm text-slate-600">{e.when} · {e.degree}</div>
+                <article className="mb-8 pb-8 border-b border-neutral-200 last:border-0 print-break-inside-avoid">
+                  <div className="flex justify-between items-start mb-3 gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-neutral-900 mb-1">{d.uniga_full.title}</h3>
+                      <p className="text-base text-neutral-600 font-medium mb-2">{d.uniga_full.company}</p>
+                    </div>
+                    <div className="text-right text-sm flex-shrink-0">
+                      <p className="text-neutral-600 font-medium mb-1">{d.uniga_full.when}</p>
+                      <p className="text-neutral-500 flex items-center gap-1.5 justify-end"><FaMapMarkerAlt className="text-xs" />{d.uniga_full.location}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </section>
+                  <ul className="space-y-2">
+                    {d.uniga_full.bullets.map((b, i) => (
+                      <li key={i} className="text-sm text-neutral-700 pl-5 relative before:content-['•'] before:absolute before:left-0 before:text-neutral-900 before:font-bold before:text-lg leading-relaxed">{b}</li>
+                    ))}
+                  </ul>
+                </article>
 
-            {/* Footer */}
-            <footer className="text-sm text-slate-700">
-              <div className="flex flex-col md:flex-row md:justify-between items-start gap-4">
-                <div>
-                  <div className="font-semibold">{lang === "en" ? "Contact" : "ติดต่อ"}</div>
-                  <div className="mt-1">{d.contact.email} • {d.contact.phone}</div>
+                <article className="mb-8 pb-8 border-b border-neutral-200 last:border-0 print-break-inside-avoid">
+                  <div className="flex justify-between items-start mb-3 gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-neutral-900 mb-1">{d.uniga_internship.title}</h3>
+                      <p className="text-base text-neutral-600 font-medium mb-2">{d.uniga_internship.company}</p>
+                    </div>
+                    <div className="text-right text-sm flex-shrink-0">
+                      <p className="text-neutral-600 font-medium mb-1">{d.uniga_internship.when}</p>
+                      <p className="text-neutral-500 flex items-center gap-1.5 justify-end"><FaMapMarkerAlt className="text-xs" />{d.uniga_internship.location}</p>
+                    </div>
+                  </div>
+                  <ul className="space-y-2">
+                    {d.uniga_internship.bullets.map((b, i) => (
+                      <li key={i} className="text-sm text-neutral-700 pl-5 relative before:content-['•'] before:absolute before:left-0 before:text-neutral-900 before:font-bold before:text-lg leading-relaxed">{b}</li>
+                    ))}
+                  </ul>
+                </article>
+              </section>
+
+              <section className="bg-white rounded-xl shadow-md p-6 sm:p-8 border border-neutral-200">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-neutral-900">
+                  <FaCode className="text-xl text-neutral-900" />
+                  <h2 className="text-xl font-bold text-neutral-900 uppercase tracking-wide">{lang === "en" ? "Projects" : "โครงการ"}</h2>
                 </div>
 
-                <div className="text-slate-700">
-                  <div className="flex items-center gap-3"><FaGithub /> <a className="text-slate-800 hover:underline" href={`https://${d.contact.github}`} target="_blank" rel="noreferrer">{d.contact.github}</a></div>
-                  <div className="flex items-center gap-3"><FaGlobe /> <a className="text-slate-800 hover:underline" href={`https://${d.contact.website}`} target="_blank" rel="noreferrer">{d.contact.website}</a></div>
-                  <div className="flex items-center gap-3"><FaMapMarkerAlt /> <span>{d.contact.location || (lang === "en" ? "Bangkok, Thailand" : "กรุงเทพฯ")}</span></div>
+                <div className="grid gap-4">
+                  {d.projects.map((p, i) => (
+                    <div key={i} className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <div className="font-semibold text-neutral-900">{p.title}</div>
+                          <div className="text-xs text-neutral-600">{p.when} · <span className="italic">{p.stack}</span></div>
+                        </div>
+                        {p.link ? (
+                          <a href={p.link} target="_blank" rel="noreferrer" className="text-sm text-neutral-700 hover:underline">View</a>
+                        ) : null}
+                      </div>
+                      <p className="mt-2 text-sm text-neutral-700">{p.desc}</p>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              </section>
 
-              <div className="mt-4 text-xs text-slate-500">{d.footerNote}</div>
-            </footer>
+              <section className="bg-white rounded-xl shadow-md p-6 sm:p-8 border border-neutral-200">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-neutral-900">
+                  <FaGraduationCap className="text-xl text-neutral-900" />
+                  <h2 className="text-xl font-bold text-neutral-900 uppercase tracking-wide">{lang === "en" ? "Education" : "การศึกษา"}</h2>
+                </div>
+
+                <div className="space-y-4">
+                  {d.education.map((e, i) => (
+                    <div key={i} className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <div className="font-semibold text-neutral-900">{e.school}</div>
+                      <div className="text-sm text-neutral-600">{e.when} · {e.degree} {e.gpa ? `· GPA ${e.gpa}` : ""}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <footer className="text-sm text-neutral-700">
+                <div className="flex flex-col md:flex-row md:justify-between items-start gap-4 mt-6">
+                  <div>
+                    <div className="font-semibold">{lang === "en" ? "Contact" : "ติดต่อ"}</div>
+                    <div className="mt-1">{d.contact.email} • {d.contact.phone}</div>
+                  </div>
+
+                  <div className="text-neutral-700">
+                    <div className="flex items-center gap-3"><FaGithub /> <a className="text-neutral-800 hover:underline" href={`https://${d.contact.github}`} target="_blank" rel="noreferrer">{d.contact.github}</a></div>
+                    <div className="flex items-center gap-3"><FaGlobe /> <a className="text-neutral-800 hover:underline" href={`https://${d.contact.website}`} target="_blank" rel="noreferrer">{d.contact.website}</a></div>
+                    <div className="flex items-center gap-3"><FaMapMarkerAlt /> <span>{d.contact.location}</span></div>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-xs text-neutral-500">{d.footerNote}</div>
+              </footer>
+            </div>
           </div>
         </div>
-
-        <style jsx>{`
-          @media print {
-            body { -webkit-print-color-adjust: exact; }
-            main { background: white !important; padding: 0 !important; }
-            .rounded-lg, .shadow, .shadow-sm { box-shadow: none !important; border-radius: 0 !important; border: none !important; }
-          }
-        `}</style>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
