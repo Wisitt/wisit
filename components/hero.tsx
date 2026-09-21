@@ -129,17 +129,17 @@
             <div className="flex-1 ">
               <div className={`mb-4 inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/3 border border-white/10 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
                 <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                <span className="text-xs uppercase tracking-wider">Open to work</span>
+                <span className="text-xs uppercase tracking-wider">Bangkok, Thailand</span>
               </div>
 
               <h1 className={`hero-title font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] mb-6 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
                 Wisit Moondet
                 <br />
-                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-300">Software Engineer</span>
+                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-300">Full-Stack Engineer</span>
               </h1>
 
               <p className={`max-w-xl text-sm sm:text-base opacity-80 mb-6 ${mounted ? "opacity-100" : "opacity-0"}`}>
-                I build reliable, maintainable web platforms — frontend interfaces and backend services — that scale and ship value quickly.
+                Backend-focused full-stack engineer building production financial-service platforms and enterprise telecom applications with secure third-party integrations, cloud infrastructure, and reliability-focused backend systems.
               </p>
 
               <div className={`flex flex-wrap gap-3 items-center ${mounted ? "opacity-100" : "opacity-0"}`}>
@@ -151,7 +151,7 @@
               </div>
 
               <div className={`mt-6 text-xs opacity-60 ${mounted ? "opacity-100" : "opacity-0"}`}>
-                Preferred locations: Bangkok — Remote. Available for full-time or contract.
+                Node.js · NestJS · Angular · TypeScript · Automated testing · Multi-environment delivery
               </div>
 
               <div className={`mt-6 flex items-center gap-3 ${mounted ? "opacity-100" : "opacity-0"}`}>

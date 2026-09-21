@@ -165,9 +165,10 @@ const MilestoneCard = memo(function MilestoneCard({
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold font-mono leading-tight mb-2 truncate">
-                {milestone.title}
-              </h3>
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-md border border-white/20 bg-white/5 inline-flex items-center justify-center text-xs font-bold" aria-hidden="true">{/* Neutral company icon placeholder; replace with an approved official logo later. */}{milestone.title.split("—")[1]?.trim().charAt(0) || "W"}</span>
+                <h3 className="text-base sm:text-lg font-bold font-mono leading-tight">{milestone.title}</h3>
+              </div>
             </div>
 
             <button
@@ -187,7 +188,7 @@ const MilestoneCard = memo(function MilestoneCard({
 
           <div
             id={`${milestone.id}-details`}
-            className="overflow-hidden transition-[max-height,opacity] duration-400 ease-[cubic-bezier(.2,.9,.25,1)]"
+            className="overflow-hidden transition-[max-height,opacity] duration-400 ease-out"
             style={{ maxHeight: isExpanded ? `${measuredMaxHeight + 28}px` : 0, opacity: isExpanded ? 1 : 0 }}
           >
             <div ref={contentInnerRef} className="space-y-4 pt-4 border-t-2 border-white/12">
@@ -217,31 +218,28 @@ export default function CareerSection() {
   const milestones: Milestone[] = useMemo(
     () => [
       {
-        id: "nilecon-fullstack",
-        year: "May 2024 – Present",
-        title: "Full-stack Developer — Nilecon",
-        description:
-          "Implement secure auth with Okta JWT and Azure AD; integrate PAM & IFA MF APIs; optimize data flows; deliver production-ready solutions across SIT, UAT, Staging.",
-        tech: ["TypeScript", "React.js", "Express", "Node.js", "JWT", "Okta", "Azure AD", "REST API", "AWS"],
-        achievement: "Shipped RBAC with Okta JWT + Azure AD; integrated PAM & IFA MF endpoints; hardened services.",
+        id: "aware-fullstack", year: "Jul 2026 - Present", title: "Full-Stack Developer — Aware Technology Solutions",
+        description: "Develop and maintain enterprise mobile ownership-transfer workflows for residential and corporate customers. Integrate legacy promotion sources, account-aware catalog loading, dynamic package shelves, eligibility filtering, and qualification and order-request mappings.",
+        tech: ["Angular", "TypeScript", "RxJS", "SCSS", "Jest", "Kibana", "SonarQube", "Bruno", "Postman"],
+        achievement: "Client: AIS — MyChannel Change Owner Portal · DEV and PVT delivery with QA, backend, product, and downstream teams.",
       },
       {
-        id: "uniga-contract",
-        year: "Nov 2023 - Apr 2024",
-        title: "Front-End Developer (Contract) — Uniga Infotech",
-        description:
-          "Worked on Health Benefit Consultant Systems: reusable Angular components, performance optimization, scalable front-end architecture.",
-        tech: ["Angular", "NgRx", "TypeScript", "SCSS", "REST API", "Cypress", "Component Design", "Git"],
-        achievement: "Delivered key modules and E2E features using Angular & NgRx.",
+        id: "nilecon-fullstack", year: "May 2025 - Jul 2026", title: "Full-Stack Developer — Nilecon (Thailand) Co., Ltd.",
+        description: "Designed and shipped backend APIs and services with production-grade error handling, secure PAM, NDID, and IFA/MF integrations, Okta JWT authentication, RBAC, reporting services, shared S3 utilities, and Zod validation.",
+        tech: ["Node.js", "Express", "NestJS", "TypeScript", "Drizzle ORM", "Okta", "AWS S3", "Zod"],
+        achievement: "Delivered financial workflows across SIT, UAT, Staging, and Production and supported client-facing solution consultation.",
       },
       {
-        id: "uniga-intern",
-        year: "Mar 2023 - Oct 2023",
-        title: "Front-End Developer (Internship) — Uniga Infotech",
-        description:
-          "Assisted front-end development for internal enterprise systems, contributed to component development, and performed integration testing.",
-        tech: ["Angular", "NgRx", "TypeScript", "SCSS", "REST API", "Cypress", "Component Design", "Git"],
-        achievement: "Improved performance and reliability of key user flows.",
+        id: "freelance-fullstack", year: "May 2024 - Apr 2025", title: "Full-Stack Developer — Freelance",
+        description: "Planned frontend architecture, REST API scope, and relational database design for a digital service management platform. Built responsive interfaces, NestJS services, authentication, real-time features, chat, file uploads, payment, and wallet flows.",
+        tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "NestJS", "Prisma", "PostgreSQL", "WebSocket", "WebRTC", "Jest"],
+        achievement: "Four-person delivery team · Supported integration testing and UAT debugging.",
+      },
+      {
+        id: "uniga-frontend", year: "Mar 2023 - Apr 2024", title: "Frontend Developer — Uniga Infotech",
+        description: "Developed production-ready Angular applications for health-benefit consultant systems, reusable UI components, NgRx state management, REST API integrations, optimized client-side data flow, and Cypress end-to-end tests.",
+        tech: ["Angular", "TypeScript", "SCSS", "NgRx", "REST API", "Cypress", "Git"],
+        achievement: "Promoted from Frontend Developer Intern (Mar–Oct 2023) to full-time Frontend Developer.",
       },
     ],
     []

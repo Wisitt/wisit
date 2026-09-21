@@ -86,12 +86,12 @@ export default function Contact(): React.ReactElement  {
 
   const validate = (): boolean => {
     if (!formData.name || !formData.email || !formData.message) {
-      alert("กรุณากรอกชื่อ อีเมล และข้อความให้ครบ");
+      alert("Please complete your name, email, and message.");
       return false;
     }
     const simpleEmailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!simpleEmailRe.test(formData.email)) {
-      alert("กรุณากรอกอีเมลให้ถูกต้อง");
+      alert("Please enter a valid email address.");
       return false;
     }
     return true;
@@ -131,9 +131,9 @@ export default function Contact(): React.ReactElement  {
         await navigator.clipboard.writeText("wisitmoondet@gmail.com");
         setCopied(true);
         window.setTimeout(() => setCopied(false), 4000);
-        alert("ไม่สามารถเปิดโปรแกรมอีเมลบนเครื่องนี้ — อีเมลถูกคัดลอกลงคลิปบอร์ด: wisitmoondet@gmail.com");
+        alert("Your email app could not be opened. The email address was copied: wisitmoondet@gmail.com");
       } catch {
-        alert("ไม่สามารถส่งอีเมลได้ตอนนี้ — โปรดติดต่อทาง wisitmoondet@gmail.com โดยตรง");
+        alert("Your email app could not be opened. Please contact wisitmoondet@gmail.com directly.");
       }
     } finally {
       setIsSubmitting(false);
@@ -228,28 +228,28 @@ export default function Contact(): React.ReactElement  {
 
               <div className="p-6 sm:p-8 border-2 border-white/20 bg-black/40 backdrop-blur-md space-y-6 rounded-2xl">
                 <div>
-                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">AVAILABILITY</h3>
+                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">CURRENT FOCUS</h3>
                   <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-white/20 bg-white/5 rounded-full">
                     <span className="w-2 h-2 bg-white animate-pulse rounded-full" />
-                    <span className="text-xs tracking-wider">AVAILABLE FOR WORK</span>
+                    <span className="text-xs tracking-wider">FINOPS AUTOMATION R&amp;D</span>
                   </div>
                 </div>
 
                 <div className="pt-6 border-t-2 border-white/20">
                   <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">LOCATION</h3>
-                  <p className="text-sm font-mono text-white/80 leading-relaxed">BANGKOK, THAILAND<br />WORKING WORLDWIDE</p>
+                  <p className="text-sm font-mono text-white/80 leading-relaxed">BANGKOK, THAILAND</p>
                 </div>
 
                 <div className="pt-6 border-t-2 border-white/20">
-                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">RESPONSE TIME</h3>
-                  <p className="text-sm font-mono text-white/80 leading-relaxed">24-48 HOURS<br />DURING BUSINESS DAYS</p>
+                  <h3 className="text-sm font-bold mb-3 tracking-wider opacity-60">LANGUAGES</h3>
+                  <p className="text-sm font-mono text-white/80 leading-relaxed">THAI (NATIVE)<br />ENGLISH (BASIC WORKING PROFICIENCY)<br />CHINESE (BEGINNER)</p>
                 </div>
               </div>
             </div>
           </div>
 
           <div className={`mt-20 pt-12 border-t-2 border-white/12 text-center transition-all duration-700 delay-400 ease-out ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <p className="text-xs opacity-60 tracking-widest mb-4">© {new Date().getFullYear()} WISITT — ALL RIGHTS RESERVED</p>
+            <p className="text-xs opacity-60 tracking-widest mb-4">© {new Date().getFullYear()} WISIT MOONDET — ALL RIGHTS RESERVED</p>
             <p className="text-xs opacity-40 tracking-wider">BUILT WITH NEXT.JS, TYPESCRIPT & TAILWIND CSS</p>
           </div>
         </div>

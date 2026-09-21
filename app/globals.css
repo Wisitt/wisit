@@ -48,6 +48,31 @@ h1 { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
 a.cta { transition: all .18s ease; }
 a.cta:hover { transform: translateY(-2px); }
 
+/* Standalone resume route — intentionally independent from the portfolio theme. */
+.resume-page { min-height:100vh; background:#e9ece8; color:#182019; padding:32px; font-family:var(--font-inter),Arial,sans-serif; }
+.resume-toolbar { max-width:980px; margin:0 auto 18px; display:flex; justify-content:space-between; gap:12px; }
+.resume-toolbar a,.resume-toolbar button { border:0; background:#172018; color:white; border-radius:99px; padding:11px 17px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none; }
+.resume-sheet { max-width:980px; margin:auto; background:white; border-radius:8px; padding:56px; box-shadow:0 20px 60px rgba(20,30,20,.12); }
+.resume-header { display:flex; justify-content:space-between; gap:30px; padding-bottom:30px; border-bottom:2px solid #172018; }
+.resume-header h1 { font-size:42px; letter-spacing:-.04em; margin:0; }.resume-header h2 { color:#52702f; margin:7px 0 0; font-size:18px; }
+.resume-contact { display:grid; gap:6px; font-size:11px; text-align:right; font-style:normal; }.resume-contact a { color:inherit; text-decoration:underline; overflow-wrap:anywhere; }
+.resume-section { padding-top:28px; }.resume-section-title { font-size:12px; letter-spacing:.16em; color:#52702f; margin:0 0 14px; }
+.resume-summary { font-size:13px; line-height:1.65; }.resume-job { padding:18px 0; border-top:1px solid #dfe4df; }.resume-job-head { display:flex; justify-content:space-between; gap:15px; }
+.resume-job h3 { margin:0; font-size:15px; }.resume-job time { font-size:11px; white-space:nowrap; }.resume-job .company-name { color:#52702f; }.resume-job .experience-meta { color:#667067; margin:8px 0; }
+.resume-job ul,.resume-rd { font-size:11px; line-height:1.55; padding-left:18px; }.resume-skills { display:grid; gap:7px; font-size:11px; }.resume-edu { display:flex; justify-content:space-between; gap:20px; border-top:1px solid #dfe4df; padding:12px 0; }
+.resume-edu h3 { font-size:12px; margin:0 0 4px; }.resume-edu p,.resume-edu time { font-size:10px; margin:0; }
+
+@media (max-width:760px) {
+  .resume-page { padding:12px; }.resume-toolbar { flex-wrap:wrap; }.resume-sheet { padding:28px 22px; overflow:hidden; }
+  .resume-header { display:block; }.resume-header h1 { font-size:32px; overflow-wrap:anywhere; }.resume-contact { text-align:left; margin-top:20px; }
+  .resume-job-head,.resume-edu { display:block; }.resume-job time,.resume-edu time { display:block; margin-top:5px; white-space:normal; }
+}
+
+@media print {
+  body { background:white; }.resume-page { padding:0; background:white; }.resume-toolbar { display:none; }
+  .resume-sheet { box-shadow:none; padding:0; max-width:none; }.resume-job { break-inside:avoid; }
+}
+
 
 .milestone-card {
   transition: box-shadow .35s, background-color .35s, border-color .35s, transform .35s;

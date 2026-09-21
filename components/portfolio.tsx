@@ -14,67 +14,34 @@ interface Project {
   impact: string;
 }
 
-/* ---------- sample data (keep your original objects) ---------- */
 const projects: Project[] = [
   {
-    title: "Finsight",
-    description: "Personal finance tracking system with OCR receipt scanning for expense categorization",
-    technologies: ["Next.js", "TypeScript", "Tailwind", "Supabase", "Nest.js", "Docker"],
-    links: { github: "https://github.com/Wisitt/finance-scan", live: "https://finance-scan.vercel.app/" },
-    status: "STUDY",
-    year: "2025",
-    features: ["OCR receipt scanning for automated expense entry", "Categorized spending visualization", "Budget planning and tracking", "Financial insights and reports"],
-    impact: "Simplified expense tracking by 70%",
+    title: "AIS MyChannel Change Owner Portal",
+    description: "Enterprise mobile ownership-transfer workflows supporting residential and corporate customers.",
+    technologies: ["Angular", "TypeScript", "RxJS", "SCSS", "Jest", "Kibana", "SonarQube"], links: {}, status: "ENTERPRISE", year: "2026",
+    features: ["Account-aware catalog loading and dynamic package shelves", "Package-eligibility filtering", "Qualification and order-request mappings", "DEV and PVT investigation using request IDs and browser DevTools"],
+    impact: "Behavior-preserving refactoring, automated tests, and CI/CD verification for enterprise delivery.",
   },
   {
-    title: "TenantBot",
-    description: "Built a multi-tenant AI customer support platform with embeddable widget and admin takeover workflows",
-    technologies: ["Node.js", "Express", "Next.js", "Prisma", "PostgreSQL/pgvector", "Docker", "AWS"],
-    links: {},
-    status: "PRODUCTION",
-    year: "2026",
-    features: ["Playbook Studio for forms, intents, persona, and knowledge", "External embeddable widget for client websites", "RAG ingestion pipeline for website and document sources", "Admin escalation and human takeover workflow"],
-    impact: "Improved support operation scalability with reusable multi-tenant architecture",
+    title: "Financial Services Platform",
+    description: "Backend APIs and services with secure third-party integrations, observability, and production-grade error handling.",
+    technologies: ["Node.js", "Express", "NestJS", "Drizzle ORM", "Okta", "AWS S3", "Zod"], links: {}, status: "PRODUCTION", year: "2025–2026",
+    features: ["PAM, NDID, and IFA/MF integrations", "Centralized token proxy and resilient retry logic", "Okta JWT authentication and RBAC", "Commission, tax, and team reporting services"],
+    impact: "Delivered financial workflows across SIT, UAT, Staging, and Production.",
   },
   {
-    title: "Principal TH-IFA Platform",
-    description: "Contributed to production delivery for customer and advisor investment workflows with secure onboarding and operations modules",
-    technologies: ["Node.js", "TypeScript", "Express", "AWS Lambda", "React", "PostgreSQL", "Okta", "NDID", "PAM"],
-    links: {},
-    status: "PRODUCTION",
-    year: "2025",
-    features: ["Onboarding and e-KYC integration workflow", "Fund subscription, redemption, and switching APIs", "Document, campaign, and notification operation modules", "Client-facing consultation and requirement alignment"],
-    impact: "Delivered stable production modules for financial workflows and cross-team operations",
+    title: "Digital Service Management Platform",
+    description: "Responsive interfaces and backend services for core digital service workflows.",
+    technologies: ["Next.js", "React", "TypeScript", "NestJS", "Prisma", "PostgreSQL", "WebSocket", "WebRTC"], links: {}, status: "TEAM DELIVERY", year: "2024–2025",
+    features: ["Authentication and user management", "Transactions and real-time features", "Chat and file uploads", "Payment, wallet, integration testing, and UAT debugging"],
+    impact: "Delivered by a four-person team from architecture and API scope through integration testing.",
   },
   {
-    title: "Classroom Booking System",
-    description: "Classroom reservation system for instructors and staff to prevent double bookings",
-    technologies: ["React", "TypeScript", "Vite", "Tailwind", "Docker", "Nginx"],
-    links: { github: "https://github.com/Wisitt/rv-project" },
-    status: "PRODUCTION",
-    year: "2024",
-    features: ["Interactive calendar for room scheduling", "Conflict detection and prevention", "Resource management for classrooms", "Notification system for booking updates"],
-    impact: "Reduced scheduling conflicts by 90%",
-  },
-  {
-    title: "Facebook Clone",
-    description: "Facebook clone developed using Angular to study social media platform functionalities",
-    technologies: ["Angular", "TypeScript", "SCSS", "Firebase"],
-    links: { github: "https://github.com/Wisitt/facebook-clone-wisit" },
-    status: "STUDY",
-    year: "2023",
-    features: ["News feed with dynamic content loading", "User profiles and authentication", "Post creation and interaction", "Social features like friend requests"],
-    impact: "Developed strong understanding of complex UI systems",
-  },
-  {
-    title: "Perfume Prediction",
-    description: "AI-driven perfume recommendation system based on lifestyle and age groups",
-    technologies: ["Python", "Tkinter", "ML Libraries"],
-    links: { github: "https://github.com/Wisitt/perfume-prediction" },
-    status: "STUDY",
-    year: "2023",
-    features: ["Lifestyle-based recommendation engine", "Age group customization", "Machine learning prediction model", "User-friendly GUI interface"],
-    impact: "Achieved 85% recommendation accuracy rate",
+    title: "FinOps Automation Toolkit",
+    description: "A 4-week self-directed toolkit for multi-cloud cost-management practice exercises.",
+    technologies: ["Terraform", "AWS Lambda", "EventBridge", "Infracost", "GitHub Actions", "pandas", "boto3", "Grafana"], links: {}, status: "R&D", year: "2026",
+    features: ["Terraform tag enforcement", "AWS Lambda and EventBridge auto-shutdown", "Infracost CI cost gates", "Chargeback reports and Grafana cost dashboard"],
+    impact: "Applied Inform, Optimize, and Operate concepts to a FinOps engagement playbook and checklist.",
   },
 ];
 
@@ -200,7 +167,7 @@ function ProjectCard({ project, isActive }: { project: Project; isActive: boolea
           <div
             id={`${project.title.replace(/\s+/g, "-")}-details`}
             ref={innerRef}
-            className="overflow-hidden transition-[max-height,opacity] duration-300 ease-[cubic-bezier(.2,.9,.25,1)]"
+            className="overflow-hidden transition-[max-height,opacity] duration-300 ease-out"
             style={{ maxHeight: expanded ? measured.current || 800 : 0, opacity: expanded ? 1 : 0 }}
             aria-hidden={!expanded}
           >
